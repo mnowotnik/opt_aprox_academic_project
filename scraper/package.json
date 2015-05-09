@@ -1,0 +1,12 @@
+{
+    "name": "scraper",
+    "version": "0.0.0",
+    "description": "scrape wdec",
+    "engine": "iojs",
+    "author": "Michał Nowotnik",
+    "dependencies": {
+        "jshashes": "latest",
+        "genetic-js": "Mike-Now/genetic-js#async",
+        "q": "1.3.0"
+    }
+}
