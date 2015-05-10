@@ -6,8 +6,9 @@
     "author": "Michał Nowotnik",
     "dependencies": {
         "jshashes": "latest",
-        "genetic-js": "Mike-Now/genetic-js#async",
+        "genetic-js": "Mike-Now/genetic-js#async-casperjs",
         "q": "1.3.0",
-        "randgen" : "0.0.1"
+        "randgen" : "0.0.1",
+        "casperjs": "n1k0/casperjs#master"
     }
 }

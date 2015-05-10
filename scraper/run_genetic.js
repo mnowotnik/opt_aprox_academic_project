@@ -143,7 +143,7 @@ var scraper = (function() {
     var date = new Date();
     var ts = date.getDate()+'-'+date.getHours()+date.getMinutes();
     var config = objUtils.copy(credentials, {
-        rounds: 10,
+        rounds: 2,
         csv: {
             headers: defHeaders,
             path: 'data/genetic'+ts+'.csv',
@@ -169,7 +169,7 @@ genetic.fitness = function(entity) {
 
 var config = {
     "iterations": 40000,
-    "size": 10,
+    "size": 1,
     "crossover": 0.3,
     "mutation": 0.3,
     "skip": 0,

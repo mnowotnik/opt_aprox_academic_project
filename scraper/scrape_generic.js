@@ -164,7 +164,7 @@ var scraper = function(config) {
         readInt('[tabindex="0"]:eq(-2)', setField('demand'));
         casper.then(function() {
             values.volume = Math.floor(0.8 * self.demand);
-            setVolume(self.volume);
+            setVolume(values.volume);
 
             self.oldVal = self.oldVal || {};
 
