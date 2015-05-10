@@ -1,11 +1,24 @@
 var require = patchRequire(require);
 var Scraper = require('./scrape_casper.js');
 var objUtils = require('./obj_utils.js');
-var credentials = require('./user');
 var Q = require('./node_modules/q/q');
+
+var cliArgs = (function(){
+    var casper = require("casper").create();
+    return casper.cli.args;
+})();
+
+var credentials = (function(){
+    if(cliArgs.length){
+        return require('./user')[cliArgs[0]];
+    }else{
+        return require('./user')['default'];
+    }
+})();
 
 var login = credentials.username;
 var pass = credentials.password;
+
 
 function samplingInfo(min, max, inc, label) {
     return {
