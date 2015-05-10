@@ -22,8 +22,8 @@ var pass = credentials.password;
 
 var values = (function() {
 
-    var qualityRate = samplingInfo(1, 100, 1, 'quality');
-    var volumeRate = samplingInfo(100000, 500000, 1000, 'volume');
+    var qualityRate = samplingInfo(60, 95, 1, 'quality');
+    var volumeRate = samplingInfo(100000, 500000, 10000, 'volume');
 
     var qmin = qualityRate.min;
     var qmax = qualityRate.max;

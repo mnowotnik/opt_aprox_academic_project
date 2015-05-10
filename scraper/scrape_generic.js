@@ -100,6 +100,7 @@ var scraper = function(config) {
 
             casper.then(function() {
                 setVolume(val.volume);
+                self.oldVal = self.oldVal || {};
 
                 function setIfNot(func, label) {
                     if (self.oldVal[label] !== val[label]) {
