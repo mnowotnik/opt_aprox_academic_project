@@ -162,7 +162,7 @@ var scraper = function(config) {
 
         click('div[class="v-caption"]:contains(Decyzje)');
         casper.waitForText('luksusowy');
-        casper.wait(500);
+        casper.wait(2000);
 
         readInt('[tabindex="0"]:eq(-2)', setField('demand'));
         casper.then(function() {
@@ -218,7 +218,12 @@ var scraper = function(config) {
                 return_rate: self.returnRate
             });
             writeRowToCsv(sample);
-            callback(sample);
+            callback(objUtils.copy(values,{
+                soldNum: self.soldNum,
+                soldRatio: self.soldRatio,
+                income: self.income,
+                returnRate: self.returnRate
+            }));
         });
         casper.waitFor(function() {
             return lock.unlocked();
