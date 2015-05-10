@@ -1,5 +1,8 @@
 var randgen = require('./node_modules/randgen/lib/randgen');
 function samplingInfo(min, max, inc, label) {
+    function bern(){
+        return Math.floor(Math.random()*3)-1;
+    }
     return {
         label: label,
         min: min,
@@ -9,25 +12,22 @@ function samplingInfo(min, max, inc, label) {
             var r = (Math.random() * ((this.max - this.min) / this.inc + 1));
             return Math.floor(r) * this.inc + this.min;
         },
-        stdRandSample: function() {
-            var r = ((randgen.rnorm()+1) * ((this.max - this.min) / this.inc + 1));
-            if(r<0){
-                return this.min;
-            }
-            return Math.floor(r) * this.inc + this.min;
-        },
         randomDrift: function() {
-            var drift =(Math.floor(Math.random() * 3) - 1) * this.inc;
+            var rand=0;
+            for(var i=0;i<10;i++){
+                rand += bern();
+            }
+            drift = rand*this.inc;
             return drift;
         },
         stdRandDrift: function(){
-            var rand = randgen.rnorm(0,5);
-            var drift = rand*this.inc;
-            if(drift<0){
-                drift = Math.ceil(drift);
+            var rand = randgen.rnorm(0,10);
+            if(rand<0){
+                var drift = Math.ceil(rand);
             }else{
-                drift = Math.floor(drift);
+                var drift = Math.floor(rand);
             }
+            drift = rand*this.inc;
             return drift;
         }
     };
