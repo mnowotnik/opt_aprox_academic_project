@@ -10,11 +10,25 @@ function samplingInfo(min, max, inc, label) {
             return Math.floor(r) * this.inc + this.min;
         },
         stdRandSample: function() {
-            var r = (randgen.rnorm() * ((this.max - this.min) / this.inc + 1));
+            var r = ((randgen.rnorm()+1) * ((this.max - this.min) / this.inc + 1));
+            if(r<0){
+                return this.min;
+            }
             return Math.floor(r) * this.inc + this.min;
         },
         randomDrift: function() {
-            return (Math.floor(Math.random() * 3) - 1) * this.inc;
+            var drift =(Math.floor(Math.random() * 3) - 1) * this.inc;
+            return drift;
+        },
+        stdRandDrift: function(){
+            var rand = randgen.rnorm(0,5);
+            var drift = rand*this.inc;
+            if(drift<0){
+                drift = Math.ceil(drift);
+            }else{
+                drift = Math.floor(drift);
+            }
+            return drift;
         }
     };
 };

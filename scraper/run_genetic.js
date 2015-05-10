@@ -4,6 +4,7 @@ var objUtils = require('./obj_utils.js');
 var Q = require('./node_modules/q/q');
 var Genetic = require('./node_modules/genetic-js/lib/genetic');
 var randgen = require('./node_modules/randgen/lib/randgen');
+var samplingInfo = require('./sampling.js');
 
 var cliArgs = (function() {
     var casper = require("casper").create();
@@ -20,26 +21,6 @@ var credentials = (function() {
 
 var login = credentials.username;
 var pass = credentials.password;
-
-function samplingInfo(min, max, inc, label) {
-    return {
-        label: label,
-        min: min,
-        max: max,
-        inc: inc,
-        randomSample: function() {
-            var r = (Math.random() * ((this.max - this.min) / this.inc + 1));
-            return Math.floor(r) * this.inc + this.min;
-        },
-        stdRandSample: function() {
-            var r = (randgen.rnorm() * ((this.max - this.min) / this.inc + 1));
-            return Math.floor(r) * this.inc + this.min;
-        },
-        randomDrift: function() {
-            return (Math.floor(Math.random() * 3) - 1) * this.inc;
-        }
-    };
-};
 
 var genetic = Genetic.create();
 genetic.optimize = Genetic.Optimize.Maximize;
@@ -77,12 +58,17 @@ genetic.seed = function() {
 
 genetic.mutate = function(entity) {
     var i = Math.floor(Math.random() * features.length);
-    var drift = features[i].randomDrift();
-    entity[features[i].label] += drift;
+    var label = features[i].label;
+    var drift = features[i].stdRandDrift();
+    var mutated = entity[label] + drift;
+    if(mutated<features[i].min){
+        mutated = features[i].min;
+    }else if(mutated>features[i].max){
+        mutated = features[i].max;
+    }
+    entity[label] = mutated;
     return entity;
 };
-
-
 
 genetic.crossover = (function() {
     function copyFeatures(from, to, r1, r2) {
@@ -116,11 +102,9 @@ genetic.crossover = (function() {
     return crossover;
 })();
 
-
 genetic.generation = function(pop, generation, stats) {
     return true;
 }
-
 
 genetic.notification = function(pop, generation, stats, isFinished) {
     var entity = pop[0].entity;
@@ -132,6 +116,7 @@ genetic.notification = function(pop, generation, stats, isFinished) {
     buf+= 'tv:'+entity.tv+' ';
     buf+= 'internet:'+entity.internet+' ';
     buf+= 'warehouse:'+entity.warehouse+' ';
+    buf+= 'fitness:' + pop[0].fitness;
     console.log(buf);
 };
 
@@ -143,7 +128,7 @@ var scraper = (function() {
     var date = new Date();
     var ts = date.getDate()+'-'+date.getHours()+date.getMinutes();
     var config = objUtils.copy(credentials, {
-        rounds: 2,
+        rounds: 10,
         csv: {
             headers: defHeaders,
             path: 'data/genetic'+ts+'.csv',
@@ -160,6 +145,7 @@ genetic.fitness = function(entity) {
     // fitness = Math.exp(-Math.pow(entity.quality - 79, 2));
     // fitness *= Math.exp(-Math.pow(entity.price - 19, 2));
     scraper.evaluate(entity,function(results){
+        console.log(results.returnRate);
         deferred.resolve(results.returnRate);
     })
 
@@ -169,10 +155,11 @@ genetic.fitness = function(entity) {
 
 var config = {
     "iterations": 40000,
-    "size": 1,
+    "size": 10,
     "crossover": 0.3,
     "mutation": 0.3,
     "skip": 0,
     "webWorkers": false
 };
 genetic.evolve(config);
+// scraper.close();

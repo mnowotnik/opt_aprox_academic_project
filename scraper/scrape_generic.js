@@ -159,7 +159,9 @@ var scraper = function(config) {
             }
         });
 
-        click('div[class="v-caption"]:contains(Decyzje)', 500);
+        click('div[class="v-caption"]:contains(Decyzje)');
+        casper.waitForText('luksusowy');
+        casper.wait(500);
 
         readInt('[tabindex="0"]:eq(-2)', setField('demand'));
         casper.then(function() {
@@ -178,6 +180,8 @@ var scraper = function(config) {
             setIfNot(setTv, 'tv')
             setIfNot(setInternet, 'internet');
             setIfNot(setWarehouse, 'warehouse');
+
+            console.log('vol'+values.volume);
             self.oldVal = values;
         });
         readInt('input[tabindex="0"][maxlength="12"]', setField('money'));
@@ -192,7 +196,8 @@ var scraper = function(config) {
         casper.then(function() {
             click(':contains("Zatwierdź")[class="v-button v-widget"]', 800);
         });
-        click('div[class="v-caption"]:contains(Wyniki)', 1000);
+        click('div[class="v-caption"]:contains(Wyniki)');
+        casper.waitForText('Udział w rynku');
 
         readInt('[tabindex="0"]:eq(14)', setField('income'));
         readInt('[tabindex="0"]:eq(3)', setField('soldNum'));
@@ -212,7 +217,6 @@ var scraper = function(config) {
                 return_rate: self.returnRate
             });
             writeRowToCsv(sample);
-            console.log('fire cb');
             callback(sample);
         });
         casper.waitFor(function() {
@@ -262,7 +266,7 @@ var scraper = function(config) {
             }
         };
         casper.then(thenFunc.bind(casper, selector, val, eq));
-        casper.wait(1100);
+        casper.wait(1500);
     };
 
     var setQuality = objUtils.partial(setParam, 'input[tabindex="2"]');
@@ -305,7 +309,9 @@ var scraper = function(config) {
                 $(selector)[0].click();
             }, selector);
         });
-        casper.wait(time);
+        if(time){
+            casper.wait(time);
+        }
     };
 
 
@@ -352,13 +358,15 @@ var scraper = function(config) {
         evaluate: function(values, cb) {
             round(values, cb);
             if (!self.initFlag) {
-                if (self.csv) {
-                    casper.then(function() {
-                        self.csv.close();
-                    });
-                }
                 casper.run();
                 self.initFlag = true;
+            }
+        },
+        close: function(){
+            if (self.csv) {
+                casper.then(function() {
+                    self.csv.close();
+                });
             }
         },
         sampleUnitPrice: function(valArray) {
