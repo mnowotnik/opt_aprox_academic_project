@@ -100,22 +100,22 @@ var scraper = function(config) {
 
             casper.then(function() {
                 setVolume(val.volume);
-                self.oldVal = self.oldVal || {};
 
-                function setIfNot(func, label) {
-                    if (self.oldVal[label] !== val[label]) {
-                        func(val[label]);
-                    }
-                }
-                setIfNot(setQuality, 'quality');
-                self.oldVal = val;
+                // self.oldVal = self.oldVal || {};
+                // function setIfNot(func, label) {
+                //     if (self.oldVal[label] !== val[label]) {
+                //         func(val[label]);
+                //     }
+                // }
+                // setIfNot(setQuality, 'quality');
+                setQuality(val.quality);
+                // self.oldVal = val;
             });
             casper.wait(2000, function() {
                 readFloat('[tabindex="0"]:eq(3)', setField('unitPrice'));
             });
 
             casper.then(function() {
-                console.log(self.unitPrice);
                 var sample = {
                     volume: val.volume,
                     quality: val.quality,
@@ -164,25 +164,37 @@ var scraper = function(config) {
         casper.waitForText('luksusowy');
         casper.wait(2000);
 
-        readInt('[tabindex="0"]:eq(-2)', setField('demand'));
+        casper.waitFor(function() {
+            return casper.evaluate(function() {
+                return $('[tabindex="0"]:eq(-2)').is(':visible');
+            });
+        }, function() {
+            readInt('[tabindex="0"]:eq(-2)', setField('demand'));
+        });
+
         casper.then(function() {
             values.volume = Math.floor(0.8 * self.demand);
             setVolume(values.volume);
 
-            self.oldVal = self.oldVal || {};
+            // self.oldVal = self.oldVal || {};
 
-            function setIfNot(func, label) {
-                if (self.oldVal[label] !== values[label]) {
-                    func(values[label]);
-                }
-            }
-            setIfNot(setQuality, 'quality');
-            setIfNot(setSellPrice, 'price');
-            setIfNot(setTv, 'tv')
-            setIfNot(setInternet, 'internet');
-            setIfNot(setWarehouse, 'warehouse');
+            // function setIfNot(func, label) {
+            //     if (self.oldVal[label] !== values[label]) {
+            //         func(values[label]);
+            //     }
+            // }
+            // setIfNot(setQuality, 'quality');
+            // setIfNot(setSellPrice, 'price');
+            // setIfNot(setTv, 'tv')
+            // setIfNot(setInternet, 'internet');
+            // setIfNot(setWarehouse, 'warehouse');
+            setQuality(values.quality);
+            setSellPrice(values.price);
+            setTv(values.tv);
+            setInternet(values.internet);
+            setWarehouse(values.warehouse);
 
-            console.log('vol'+values.volume);
+            console.log('vol' + values.volume);
             self.oldVal = values;
         });
         readInt('input[tabindex="0"][maxlength="12"]', setField('money'));
@@ -199,6 +211,7 @@ var scraper = function(config) {
         });
         click('div[class="v-caption"]:contains(Wyniki)');
         casper.waitForText('Udział w rynku');
+        casper.wait(1000);
 
         readInt('[tabindex="0"]:eq(14)', setField('income'));
         readInt('[tabindex="0"]:eq(3)', setField('soldNum'));
@@ -208,6 +221,7 @@ var scraper = function(config) {
             if (self.iteration >= self.rounds) {
                 self.iteration = 0;
                 click('div > a :contains("List gier")', 1000);
+                casper.waitForText('Filtruj');
             }
             self.soldRatio = self.soldNum / values.volume;
             self.returnRate = self.income / self.moneySpent;
@@ -215,14 +229,16 @@ var scraper = function(config) {
                 sold_num: self.soldNum,
                 sold_ratio: self.soldRatio,
                 income: self.income,
-                return_rate: self.returnRate
+                return_rate: self.returnRate,
+                unit_price: self.unitPrice
             });
             writeRowToCsv(sample);
-            callback(objUtils.copy(values,{
+            callback(objUtils.copy(values, {
                 soldNum: self.soldNum,
                 soldRatio: self.soldRatio,
                 income: self.income,
-                returnRate: self.returnRate
+                returnRate: self.returnRate,
+                unitPrice: self.unitPrice
             }));
         });
         casper.waitFor(function() {
@@ -251,7 +267,15 @@ var scraper = function(config) {
     }
 
     var setParam = function(selector, val, eq) {
+        var cval='';
+        readField(selector,function(value){
+            cval = value;
+        });
         var thenFunc = function(selector, val, eq) {
+            if(cval === val.toString()){
+                return;
+            }
+
             if (eq) {
                 click(selector + ':eq(' + eq + ')', 1);
             } else {
@@ -270,9 +294,9 @@ var scraper = function(config) {
             } else {
                 casper.click(selector);
             }
+            casper.wait(1500);
         };
         casper.then(thenFunc.bind(casper, selector, val, eq));
-        casper.wait(1500);
     };
 
     var setQuality = objUtils.partial(setParam, 'input[tabindex="2"]');
@@ -315,7 +339,7 @@ var scraper = function(config) {
                 $(selector)[0].click();
             }, selector);
         });
-        if(time){
+        if (time) {
             casper.wait(time);
         }
     };
@@ -368,7 +392,7 @@ var scraper = function(config) {
                 self.initFlag = true;
             }
         },
-        close: function(){
+        close: function() {
             if (self.csv) {
                 casper.then(function() {
                     self.csv.close();

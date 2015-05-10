@@ -59,11 +59,11 @@ genetic.seed = function() {
 genetic.mutate = function(entity) {
     var i = Math.floor(Math.random() * features.length);
     var label = features[i].label;
-    var drift = features[i].stdRandDrift();
+    var drift = features[i].randomDrift();
     var mutated = entity[label] + drift;
-    if(mutated<features[i].min){
+    if (mutated < features[i].min) {
         mutated = features[i].min;
-    }else if(mutated>features[i].max){
+    } else if (mutated > features[i].max) {
         mutated = features[i].max;
     }
     entity[label] = mutated;
@@ -110,28 +110,28 @@ genetic.notification = function(pop, generation, stats, isFinished) {
     var entity = pop[0].entity;
 
     var buf = '';
-    buf+= 'vol:'+entity.volume+' ';
-    buf+= 'qual:'+entity.quality+' ';
-    buf+= 'price:'+entity.price+' ';
-    buf+= 'tv:'+entity.tv+' ';
-    buf+= 'internet:'+entity.internet+' ';
-    buf+= 'warehouse:'+entity.warehouse+' ';
-    buf+= 'fitness:' + pop[0].fitness;
+    buf += 'vol:' + entity.volume + ' ';
+    buf += 'qual:' + entity.quality + ' ';
+    buf += 'price:' + entity.price + ' ';
+    buf += 'tv:' + entity.tv + ' ';
+    buf += 'internet:' + entity.internet + ' ';
+    buf += 'warehouse:' + entity.warehouse + ' ';
+    buf += 'fitness:' + pop[0].fitness;
     console.log(buf);
 };
 
 var scraper = (function() {
-    var defHeaders = ['volume', 'quality', 'tv', 'internet', 'warehouse', 'price',
-        'sold_num', 'sold_ratio', 'income', 'return_rate'
+    var headers = ['volume', 'quality', 'tv', 'internet', 'warehouse', 'price',
+        'sold_num', 'sold_ratio', 'income', 'return_rate', 'unit_price'
     ];
 
     var date = new Date();
-    var ts = date.getDate()+'-'+date.getHours()+date.getMinutes();
+    var ts = date.getDate() + '-' + date.getHours() + date.getMinutes();
     var config = objUtils.copy(credentials, {
         rounds: 10,
         csv: {
-            headers: defHeaders,
-            path: 'data/genetic'+ts+'.csv',
+            headers: headers,
+            path: 'data/genetic' + ts + '.csv',
             delim: '\t'
         }
     });
@@ -144,7 +144,7 @@ genetic.fitness = function(entity) {
 
     // fitness = Math.exp(-Math.pow(entity.quality - 79, 2));
     // fitness *= Math.exp(-Math.pow(entity.price - 19, 2));
-    scraper.evaluate(entity,function(results){
+    scraper.evaluate(entity, function(results) {
         console.log(results.returnRate);
         deferred.resolve(results.returnRate);
     })
@@ -155,11 +155,11 @@ genetic.fitness = function(entity) {
 
 var config = {
     "iterations": 40000,
-    "size": 10,
+    "size": 29,
     "crossover": 0.3,
     "mutation": 0.3,
     "skip": 0,
     "webWorkers": false
 };
 genetic.evolve(config);
-// scraper.close();
+scraper.close();
