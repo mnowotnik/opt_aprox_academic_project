@@ -1,5 +1,5 @@
 var require = patchRequire(require);
-var Scraper = require('./scrape_casper.js');
+var Scraper = require('./scrape_generic.js');
 var objUtils = require('./obj_utils.js');
 var Q = require('./node_modules/q/q');
 var Genetic = require('./node_modules/genetic-js/lib/genetic');
@@ -20,7 +20,6 @@ var credentials = (function() {
 
 var login = credentials.username;
 var pass = credentials.password;
-
 
 function samplingInfo(min, max, inc, label) {
     return {
@@ -66,12 +65,9 @@ var features = (function() {
 })();
 
 
-var volume = 50000;
 genetic.seed = function() {
     var l = features.length;
-    var s = {
-        volume: volume
-    };
+    var s = {};
     for (var i = 0; i < l; i++) {
         var gen = features[i];
         s[gen.label] = gen.randomSample();
@@ -129,11 +125,13 @@ genetic.generation = function(pop, generation, stats) {
 genetic.notification = function(pop, generation, stats, isFinished) {
     var entity = pop[0].entity;
 
-    var i;
     var buf = '';
-    Object.keys(entity).forEach(function(key) {
-        buf += entity[key] + " ";
-    });
+    buf+= 'vol:'+entity.volume+' ';
+    buf+= 'qual:'+entity.quality+' ';
+    buf+= 'price:'+entity.price+' ';
+    buf+= 'tv:'+entity.tv+' ';
+    buf+= 'internet:'+entity.internet+' ';
+    buf+= 'warehouse:'+entity.warehouse+' ';
     console.log(buf);
 };
 
@@ -142,10 +140,13 @@ var scraper = (function() {
         'sold_num', 'sold_ratio', 'income', 'return_rate'
     ];
 
+    var date = new Date();
+    var ts = date.getDate()+'-'+date.getHours()+date.getMinutes();
     var config = objUtils.copy(credentials, {
+        rounds: 10,
         csv: {
             headers: defHeaders,
-            path: 'sample.csv',
+            path: 'data/genetic'+ts+'.csv',
             delim: '\t'
         }
     });
@@ -153,51 +154,25 @@ var scraper = (function() {
 })();
 
 genetic.fitness = function(entity) {
-    var fitness = 0;
+    // var fitness = 0;
     var deferred = Q.defer();
 
-    fitness = Math.exp(-Math.pow(entity.quality - 79, 2));
-    fitness *= Math.exp(-Math.pow(entity.price - 19, 2));
+    // fitness = Math.exp(-Math.pow(entity.quality - 79, 2));
+    // fitness *= Math.exp(-Math.pow(entity.price - 19, 2));
+    scraper.evaluate(entity,function(results){
+        deferred.resolve(results.returnRate);
+    })
 
-    deferred.resolve(fitness);
+    // deferred.resolve(fitness);
     return deferred.promise;
 };
-/*
-var l = values.length;
-
-function iter(i) {
-    if (i >= l) {
-        return;
-    }
-    var valSlice = [values[i]];
-    promises = valSlice.map(function(values) {
-        return evaluate(values);
-    });
-    // Scraper.resume();
-    Q.all(promises).then(function(dataArr) {
-        setTimeout(function() {
-            iter(i + 1);
-        }, 0);
-    });
-}
-
-function evaluate(values) {
-    var deferred = Q.defer();
-    scraper.evaluate(values, function(data) {
-        // Scraper.pause();
-        deferred.resolve(data);
-    });
-    return deferred.promise;
-};
-
-iter(0);*/
 
 var config = {
-    "iterations": 400,
+    "iterations": 40000,
     "size": 10,
     "crossover": 0.3,
     "mutation": 0.3,
-    "skip": 20,
+    "skip": 0,
     "webWorkers": false
 };
 genetic.evolve(config);

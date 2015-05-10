@@ -1,7 +1,8 @@
 var require = patchRequire(require);
-var Scraper = require('./scrape_casper.js');
+var Scraper = require('./scrape_generic.js');
 var objUtils = require('./obj_utils.js');
 var Q = require('./node_modules/q/q');
+var samplingInfo = require('./sampling.js');
 
 var cliArgs = (function(){
     var casper = require("casper").create();
@@ -18,20 +19,6 @@ var credentials = (function(){
 
 var login = credentials.username;
 var pass = credentials.password;
-
-
-function samplingInfo(min, max, inc, label) {
-    return {
-        label: label,
-        min: min,
-        max: max,
-        inc: inc,
-        randomSample: function() {
-            var r = (Math.random() * ((this.max - this.min) / this.inc + 1));
-            return Math.floor(r) * this.inc + this.min;
-        }
-    };
-};
 
 var values = (function() {
 
@@ -72,10 +59,12 @@ var defHeaders = ['volume', 'quality', 'tv', 'internet', 'warehouse', 'price',
     'sold_num', 'sold_ratio', 'income', 'return_rate'
 ];
 
+var date = new Date();
+var ts = date.getDate()+'-'+date.getHours()+date.getMinutes();
 var config = objUtils.copy(credentials, {
     csv: {
         headers: defHeaders,
-        path: 'sample.csv',
+        path: 'random'+ts+'.csv',
         delim: '\t'
     }
 });

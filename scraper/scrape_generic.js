@@ -38,8 +38,6 @@ var defCsvPath = function() {
 
 var scraper = function(config) {
     var self = {};
-    var iteration = 0;
-    var maxIterations = config.maxIterations || 10;
 
     if (config.csv) {
         var csvInfo = config.csv;
@@ -49,6 +47,8 @@ var scraper = function(config) {
         var csv = csvFactory(csvInfo.path, csvInfo.delim, csvInfo.headers);
         self.csv = csv;
     }
+    self.rounds = config.rounds || 10;
+    self.players = config.players || 1;
 
     var login = config.username;
     var pass = config.password;
@@ -64,10 +64,9 @@ var scraper = function(config) {
         waitTimeout: 60000
     });
 
-    function cycle(values, callback) {
-        var csv = self.csv;
-        if (!self.started) {
+    function start() {
 
+        if (!self.started) {
             casper.start(url);
 
             casper.waitForSelector('#loginButton', function() {
@@ -80,9 +79,64 @@ var scraper = function(config) {
             });
             self.started = true;
         }
+    }
+
+
+    function upriceSampling(values) {
+
+        var csv = self.csv;
+        start();
+        initGame();
+        click('div[class="v-caption"]:contains(Decyzje)', 500);
+
+        var len = values.length;
+
+        function iter(ii) {
+            if (ii >= len) {
+                return;
+            }
+
+            var val = values[ii];
+
+            casper.then(function() {
+                setVolume(val.volume);
+
+                function setIfNot(func, label) {
+                    if (self.oldVal[label] !== val[label]) {
+                        func(val[label]);
+                    }
+                }
+                setIfNot(setQuality, 'quality');
+                self.oldVal = val;
+            });
+            casper.wait(2000, function() {
+                readFloat('[tabindex="0"]:eq(3)', setField('unitPrice'));
+            });
+
+            casper.then(function() {
+                console.log(self.unitPrice);
+                var sample = {
+                    volume: val.volume,
+                    quality: val.quality,
+                    unit_price: self.unitPrice
+                };
+                writeRowToCsv(sample);
+                iter(ii + 1);
+            });
+        };
+        iter(0);
+    };
+
+    function round(values, callback) {
+        if (!self.iteration) {
+            self.iteration = 0;
+        }
+
+        var csv = self.csv;
+        start();
 
         casper.then(function() {
-            if (iteration == 0) {
+            if (self.iteration == 0) {
                 casper.then(function() {
 
                     function checkInitFlag() {
@@ -105,13 +159,12 @@ var scraper = function(config) {
             }
         });
 
-
         click('div[class="v-caption"]:contains(Decyzje)', 500);
 
+        readInt('[tabindex="0"]:eq(-2)', setField('demand'));
         casper.then(function() {
-            if (iteration == 0) {
-                setVolume(values.volume);
-            }
+            values.volume = Math.floor(0.8 * self.demand);
+            setVolume(self.volume);
 
             self.oldVal = self.oldVal || {};
 
@@ -129,7 +182,7 @@ var scraper = function(config) {
         });
         readInt('input[tabindex="0"][maxlength="12"]', setField('money'));
         readInt('[tabindex="0"]:eq(30)', setField('moneyLeft'));
-        // readFloat('[tabindex="0"]:eq(3)', setField(self, 'unitPrice'));
+        readFloat('[tabindex="0"]:eq(3)', setField('unitPrice'));
 
         casper.then(function() {
             self.moneySpent = self.money - self.moneyLeft;
@@ -144,30 +197,27 @@ var scraper = function(config) {
         readInt('[tabindex="0"]:eq(14)', setField('income'));
         readInt('[tabindex="0"]:eq(3)', setField('soldNum'));
 
-
         casper.then(function() {
-            iteration++;
-            if (iteration >= maxIterations) {
-                iteration = 0;
+            self.iteration++;
+            if (self.iteration >= self.rounds) {
+                self.iteration = 0;
                 click('div > a :contains("List gier")', 1000);
             }
+            self.soldRatio = self.soldNum / values.volume;
+            self.returnRate = self.income / self.moneySpent;
             var sample = objUtils.copy(values, {
                 sold_num: self.soldNum,
-                sold_ratio: self.soldNum / values.volume,
+                sold_ratio: self.soldRatio,
                 income: self.income,
-                return_rate: self.income / self.moneySpent
+                return_rate: self.returnRate
             });
             writeRowToCsv(sample);
             console.log('fire cb');
             callback(sample);
         });
-        casper.then(function(){
-            console.log(lock.unlocked());
-        })
-        casper.waitFor(function(){return lock.unlocked();});
-        casper.then(function(){
-            console.log('stopped waitigin')
-        })
+        casper.waitFor(function() {
+            return lock.unlocked();
+        });
     };
 
     function initGame() {
@@ -177,7 +227,7 @@ var scraper = function(config) {
         casper.waitForSelector('#addNewGameButton');
         var hash = new MD5;
         var hashstr = hash.hex(Math.random() + 7535 + 'DEADBEEF');
-        setGame(1, Math.pow(10, 9), maxIterations, botname + hashstr.slice(20));
+        setGame(self.players, Math.pow(10, 9), self.rounds, botname + hashstr.slice(20));
         readField('#nameInput', setField('game'));
         click('#addNewGameButton', 1);
         casper.waitForSelector('#addNewGameLink', function() {
@@ -300,7 +350,7 @@ var scraper = function(config) {
 
     return {
         evaluate: function(values, cb) {
-            cycle(values, cb);
+            round(values, cb);
             if (!self.initFlag) {
                 if (self.csv) {
                     casper.then(function() {
@@ -310,6 +360,10 @@ var scraper = function(config) {
                 casper.run();
                 self.initFlag = true;
             }
+        },
+        sampleUnitPrice: function(valArray) {
+            upriceSampling(valArray);
+            casper.run();
         },
         casper: casper
     }
