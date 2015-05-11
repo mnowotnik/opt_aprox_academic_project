@@ -29,7 +29,7 @@ genetic.select2 = Genetic.Select2.Tournament2;
 
 var features = (function() {
 
-    var commercialRate = samplingInfo(0, 50000, 1000, null);
+    var commercialRate = samplingInfo(0, 0, 1000, null);
     var tvRate = objUtils.copy(commercialRate, {
         label: 'tv'
     });

@@ -61,7 +61,7 @@ var scraper = function(config) {
         // },
         logLevel: "info",
         // verbose: true,
-        waitTimeout: 60000
+        waitTimeout: 600000
     });
 
     function start() {
@@ -87,7 +87,8 @@ var scraper = function(config) {
         var csv = self.csv;
         start();
         initGame();
-        click('div[class="v-caption"]:contains(Decyzje)', 500);
+        clickDecisions();
+        // click('div[class="v-caption"]:contains(Decyzje)', 500);
 
         var len = values.length;
 
@@ -99,6 +100,13 @@ var scraper = function(config) {
             var val = values[ii];
 
             casper.then(function() {
+                casper.evaluate(function() {
+                    $('[tabindex="0"]:eq(3)')[0].value = '-';
+                });
+                setQuality(val.quality);
+                casper.evaluate(function() {
+                    $('[tabindex="0"]:eq(3)')[0].value = '-';
+                });
                 setVolume(val.volume);
 
                 // self.oldVal = self.oldVal || {};
@@ -108,12 +116,17 @@ var scraper = function(config) {
                 //     }
                 // }
                 // setIfNot(setQuality, 'quality');
-                setQuality(val.quality);
                 // self.oldVal = val;
             });
-            casper.wait(2000, function() {
+            casper.waitFor(function() {
+                return casper.evaluate(function() {
+                    return $('[tabindex="0"]:eq(3)')[0].value !== '-';
+                });
+            }, function() {
                 readFloat('[tabindex="0"]:eq(3)', setField('unitPrice'));
             });
+            // casper.wait(2000, function() {
+            // });
 
             casper.then(function() {
                 var sample = {
@@ -159,10 +172,9 @@ var scraper = function(config) {
                 });
             }
         });
+        clickDecisions();
 
-        click('div[class="v-caption"]:contains(Decyzje)');
-        casper.waitForText('luksusowy');
-        casper.wait(2000);
+        // click('div[class="v-caption"]:contains(Decyzje)');
 
         casper.waitFor(function() {
             return casper.evaluate(function() {
@@ -211,10 +223,43 @@ var scraper = function(config) {
         });
         click('div[class="v-caption"]:contains(Wyniki)');
         casper.waitForText('Udział w rynku');
-        casper.wait(1000);
+        casper.then(function() {
+            casper.evaluate(function() {
+                $('[tabindex="0"]:eq(3)')[0].value = '-';
+                $('[tabindex="0"]:eq(14)')[0].value = '-';
+            });
+        });
+        casper.waitFor(function() {
+            return casper.evaluate(function() {
+                return $('[tabindex="0"]:eq(3)')[0].value !== '-' &&
+                    $('[tabindex="0"]:eq(14)')[0].value !== '-';
 
-        readInt('[tabindex="0"]:eq(14)', setField('income'));
-        readInt('[tabindex="0"]:eq(3)', setField('soldNum'));
+                // return $('span:contains(Eksport wynik)').is(':visible') && $('img').is(':visible');
+            });
+        }, function() {
+            readInt('[tabindex="0"]:eq(14)', setField('income'));
+            readInt('[tabindex="0"]:eq(3)', setField('soldNum'));
+        });
+        // casper.wait(1000);
+        // function readAgain() {
+
+        //     casper.then(function() {
+        //         console.log('log: ' + self.income + ' ' + self.soldNum);
+        //         if (isNaN(self.income) || isNaN(self.soldNum)) {
+        //             casper.wait(1000, function() {
+        //                 readInt('[tabindex="0"]:eq(14)', setField('income'));
+        //                 readInt('[tabindex="0"]:eq(3)', setField('soldNum'));
+        //             });
+        //         }
+
+        //         casper.then(function() {
+        //             if (isNaN(self.income) || isNaN(self.soldNum)) {
+        //                 readAgain();
+        //             }
+        //         });
+        //     });
+        // };
+        // readAgain();
 
         casper.then(function() {
             self.iteration++;
@@ -262,17 +307,32 @@ var scraper = function(config) {
             }, self.game);
         });
 
-        casper.wait(2000);
+        // casper.wait(2000);
+        casper.waitFor(function() {
+            return casper.evaluate(function() {
+                return $('div[class="v-caption"]:contains(Decyzje)').is(':visible');
+            });
+        })
+    }
+
+    function clickDecisions() {
         click('div[class="v-caption"]:contains(Decyzje)', 1000);
+        casper.waitForText('luksusowy');
+        casper.waitFor(function() {
+            return casper.evaluate(function() {
+                return $(':contains("Zatwierdź")[class="v-button v-widget"]').is(':visible');
+            });
+        })
+
     }
 
     var setParam = function(selector, val, eq) {
-        var cval='';
-        readField(selector,function(value){
+        var cval = '';
+        readField(selector, function(value) {
             cval = value;
         });
         var thenFunc = function(selector, val, eq) {
-            if(cval === val.toString()){
+            if (cval === val.toString()) {
                 return;
             }
 
