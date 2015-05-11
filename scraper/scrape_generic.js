@@ -88,8 +88,6 @@ var scraper = function(config) {
         start();
         initGame();
         clickDecisions();
-        // click('div[class="v-caption"]:contains(Decyzje)', 500);
-
         var len = values.length;
 
         function iter(ii) {
@@ -99,36 +97,50 @@ var scraper = function(config) {
 
             var val = values[ii];
 
+
             casper.then(function() {
-                casper.evaluate(function() {
-                    $('[tabindex="0"]:eq(3)')[0].value = '-';
-                });
-                setQuality(val.quality);
                 casper.evaluate(function() {
                     $('[tabindex="0"]:eq(3)')[0].value = '-';
                 });
                 setVolume(val.volume);
-
-                // self.oldVal = self.oldVal || {};
-                // function setIfNot(func, label) {
-                //     if (self.oldVal[label] !== val[label]) {
-                //         func(val[label]);
-                //     }
-                // }
-                // setIfNot(setQuality, 'quality');
-                // self.oldVal = val;
+                if(setQuality(val.quality)){
+                    casper.wait(1000);
+                }
+                    // waitForNotEqual('[tabindex="0"]:eq(3)','-');
+                    // casper.waitFor(function() {
+                    //     return casper.evaluate(function() {
+                    //         return $('[tabindex="0"]:eq(3)')[0].value !== '-';
+                    //     });    
+                // });
+                casper.evaluate(function() {
+                    $('[tabindex="0"]:eq(3)')[0].value = '-';
+                });
             });
             casper.waitFor(function() {
                 return casper.evaluate(function() {
                     return $('[tabindex="0"]:eq(3)')[0].value !== '-';
-                });
-            }, function() {
-                readFloat('[tabindex="0"]:eq(3)', setField('unitPrice'));
+                });    
+            },function(){}, function(){},3000);
+
+            readFloat('[tabindex="0"]:eq(3)', setField('earlyUnitPrice'));
+
+            casper.then(function(){
+                if(isNaN(self.earlyUnitPrice)){
+                    casper.waitFor(function(){
+                        return !isIndicator();
+                    });
+                    readFloat('[tabindex="0"]:eq(3)', setField('earlyUnitPrice'));
+                }
             });
-            // casper.wait(2000, function() {
-            // });
+
+            casper.then(function(){
+                if(!isNaN(self.earlyUnitPrice)){
+                    self.unitPrice = self.earlyUnitPrice;
+                }
+            });
 
             casper.then(function() {
+                console.log(self.unitPrice);
                 var sample = {
                     volume: val.volume,
                     quality: val.quality,
@@ -328,6 +340,21 @@ var scraper = function(config) {
 
     }
 
+    function waitForNotEqual(selector,val){
+        casper.waitFor(function() {
+            return casper.evaluate(function() {
+                return $(selector)[0].value !== val;
+            });
+        });
+    };
+
+    function isIndicator(){return casper.evaluate(function() {
+        var indic = $('[class="v-loading-indicator first"]').is(':visible');
+        indic = indic || $('[class="v-loading-indicator second v-loading-indicator-delay"]').is(':visible');
+        indic = indic || $('[class="v-loading-indicator third v-loading-indicator-wait"]').is(':visible');
+        return indic;
+    });};
+
     var setParam = function(selector, val, eq) {
         var cval = '';
         readField(selector, function(value) {
@@ -335,7 +362,7 @@ var scraper = function(config) {
         });
         var thenFunc = function(selector, val, eq) {
             if (cval === val.toString()) {
-                return;
+                return false;
             }
 
             if (eq) {
@@ -359,6 +386,7 @@ var scraper = function(config) {
             casper.wait(1500);
         };
         casper.then(thenFunc.bind(casper, selector, val, eq));
+        return true;
     };
 
     var setQuality = objUtils.partial(setParam, 'input[tabindex="2"]');
@@ -472,6 +500,5 @@ var scraper = function(config) {
 scraper.resume = lock.resume.bind(lock);
 scraper.pause = lock.pause.bind(lock);
 scraper.unlocked = lock.unlocked.bind(lock);
-
 
 module.exports = scraper;
