@@ -53,6 +53,7 @@ genetic.seed = function() {
         var gen = features[i];
         s[gen.label] = gen.randomSample();
     }
+    s.volume=10000;
     return s;
 };
 

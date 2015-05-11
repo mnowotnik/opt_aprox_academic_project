@@ -185,7 +185,9 @@ var scraper = function(config) {
         });
 
         casper.then(function() {
-            values.volume = Math.floor(0.8 * self.demand);
+            if(!values.volume){
+                values.volume = Math.floor(0.8 * self.demand);
+            }
             setVolume(values.volume);
 
             // self.oldVal = self.oldVal || {};
@@ -225,21 +227,20 @@ var scraper = function(config) {
         casper.waitForText('Udział w rynku');
         casper.then(function() {
             casper.evaluate(function() {
-                $('[tabindex="0"]:eq(3)')[0].value = '-';
+                // $('[tabindex="0"]:eq(3)')[0].value = '-';
                 $('[tabindex="0"]:eq(14)')[0].value = '-';
             });
         });
+        var noth = function(){};
         casper.waitFor(function() {
-            return casper.evaluate(function() {
-                return $('[tabindex="0"]:eq(3)')[0].value !== '-' &&
-                    $('[tabindex="0"]:eq(14)')[0].value !== '-';
-
-                // return $('span:contains(Eksport wynik)').is(':visible') && $('img').is(':visible');
+            return casper.evaluate(function(oldinc,oldsold) {
+                return $('[tabindex="0"]:eq(3)')[0].value !=='-' &&
+                    $('[tabindex="0"]:eq(14)')[0].value !=='-';
             });
-        }, function() {
-            readInt('[tabindex="0"]:eq(14)', setField('income'));
-            readInt('[tabindex="0"]:eq(3)', setField('soldNum'));
-        });
+        },noth,noth,15000);
+        readInt('[tabindex="0"]:eq(14)', setField('income'));
+        readInt('[tabindex="0"]:eq(3)', setField('soldNum'));
+
         // casper.wait(1000);
         // function readAgain() {
 
