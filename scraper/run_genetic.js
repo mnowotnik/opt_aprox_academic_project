@@ -79,7 +79,7 @@ genetic.crossover = (function() {
     };
 
     function generate(i1, i2, a, b) {
-        var child = {};
+        var child = objUtils.copy(i1);
         copyFeatures(i1, child, 0, a);
         copyFeatures(i2, child, a, b);
         copyFeatures(i1, child, b, features.length);

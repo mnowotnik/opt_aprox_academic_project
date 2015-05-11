@@ -22,7 +22,7 @@ var pass = credentials.password;
 
 var values = (function() {
 
-    var qualityRate = samplingInfo(65, 80, 1, 'quality');
+    var qualityRate = samplingInfo(75, 80, 1, 'quality');
     var volumeRate = samplingInfo(100000, 400000, 1000, 'volume');
 
     var qmin = qualityRate.min;

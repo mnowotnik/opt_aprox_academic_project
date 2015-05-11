@@ -386,6 +386,9 @@ var scraper = function(config) {
             casper.wait(1500);
         };
         casper.then(thenFunc.bind(casper, selector, val, eq));
+        casper.waitFor(function(){
+            return !isIndicator();
+        })
         return true;
     };
 
