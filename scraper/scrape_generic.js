@@ -186,6 +186,7 @@ var scraper = function(config) {
 
         casper.then(function() {
             if(!values.volume){
+                console.log(values.volume+' WTFFFFFFFFFFFF');
                 values.volume = Math.floor(0.8 * self.demand);
             }
             setVolume(values.volume);
@@ -237,7 +238,7 @@ var scraper = function(config) {
                 return $('[tabindex="0"]:eq(3)')[0].value !=='-' &&
                     $('[tabindex="0"]:eq(14)')[0].value !=='-';
             });
-        },noth,noth,15000);
+        },noth,noth,600000);
         readInt('[tabindex="0"]:eq(14)', setField('income'));
         readInt('[tabindex="0"]:eq(3)', setField('soldNum'));
 
