@@ -254,6 +254,15 @@ var scraper = function(config) {
         readInt('[tabindex="0"]:eq(14)', setField('income'));
         readInt('[tabindex="0"]:eq(3)', setField('soldNum'));
 
+        casper.then(function(){
+            if(isNaN(self.income)){
+                casper.wait(10000,function(){
+                    readInt('[tabindex="0"]:eq(14)', setField('income'));
+                    readInt('[tabindex="0"]:eq(3)', setField('soldNum'));
+                })
+            }
+        });
+
         // casper.wait(1000);
         // function readAgain() {
 
