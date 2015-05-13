@@ -151,7 +151,7 @@ var scraper = function(config) {
                 if (!isNaN(self.earlyUnitPrice)) {
                     self.unitPrice = self.earlyUnitPrice;
                 }
-            });
+            });false
 
             casper.then(function() {
                 console.log(self.unitPrice);
@@ -222,12 +222,12 @@ var scraper = function(config) {
         });
         click(SCORES_TAB_SELECT);
         casper.waitForText('Udział w rynku');
+        readInt(GROSS_INC_SELECT, setField('oldIncome'));
         casper.then(function() {
             casper.evaluate(function(sel) {
                 $(sel)[0].value = '-';
             }, GROSS_INC_SELECT);
         });
-        readInt(GROSS_INC_SELECT, setField('oldIncome'));
         casper.waitFor(function() {
             return casper.evaluate(function(selinc, selnum) {
                 return $(selinc)[0].value !== '-' &&
