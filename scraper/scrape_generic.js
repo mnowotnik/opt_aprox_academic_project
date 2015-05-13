@@ -233,20 +233,23 @@ var scraper = function(config) {
                 return $(selinc)[0].value !== '-' &&
                     $(selnum)[0].value !== '-';
             }, GROSS_INC_SELECT, SOLD_CT_SELECT);
-        }, _void, _void, 20000);
+        }, _void, _void, 10000);
         readInt(GROSS_INC_SELECT, setField('income'));
         readInt(SOLD_CT_SELECT, setField('soldNum'));
 
         casper.then(function() {
             if (isNaN(self.income)) {
-                casper.wait(10000, function() {
+                casper.wait(5000, function() {
                     readInt(GROSS_INC_SELECT, setField('income'));
                     readInt(SOLD_CT_SELECT, setField('soldNum'));
                 });
             }
+        });
+        caper.then(function(){
             if (isNaN(self.income)) {
                 self.income = self.oldIncome;
             }
+
         });
 
         casper.then(function() {
