@@ -12,6 +12,22 @@ var Casper = require('casper');
 var url = 'http://msg.szewczyk.pro';
 var objUtils = require('./obj_utils.js');
 
+var GROSS_INC_SELECT = 'input[tabindex="0"]:eq(9)';
+var SOLD_CT_SELECT = 'input[tabindex="0"]:eq(1)';
+var FREE_CASH_SELECT = 'input[tabindex="0"]:eq(29)';
+var CASH_SELECT = 'input[tabindex="0"][maxlength="12"]';
+var UPRICE_SELECT = 'input[tabindex="0"]:eq(2)';
+var COMMIT_SELECT = ':contains("Zatwierdź")[class="v-button v-widget"]';
+var SCORES_TAB_SELECT = 'div[class="v-caption"]:contains(Wyniki)';
+var GAME_LIST_SELECT = 'div > a :contains("List gier")';
+var DECISIONS_TAB_SELECT = 'div[class="v-caption"]:contains(Decyzje)';
+
+var DEBUG_FLAG = true;
+
+var PRODUCT_CONST_COST = 10000;
+
+var _void = function() {};
+
 var lock = {
     paused: false,
     pause: function() {
@@ -24,8 +40,6 @@ var lock = {
         return !this.paused;
     }
 };
-
-var initFlag = false;
 
 var defHeaders = ['vol', 'qual', 'tv', 'internet', 'warehouse', 'price',
     'sold_num', 'sold_ratio', 'income', 'return_rate'
@@ -103,14 +117,14 @@ var scraper = function(config) {
                     $('[tabindex="0"]:eq(3)')[0].value = '-';
                 });
                 setVolume(val.volume);
-                if(setQuality(val.quality)){
+                if (setQuality(val.quality)) {
                     casper.wait(1000);
                 }
-                    // waitForNotEqual('[tabindex="0"]:eq(3)','-');
-                    // casper.waitFor(function() {
-                    //     return casper.evaluate(function() {
-                    //         return $('[tabindex="0"]:eq(3)')[0].value !== '-';
-                    //     });    
+                // waitForNotEqual('[tabindex="0"]:eq(3)','-');
+                // casper.waitFor(function() {
+                //     return casper.evaluate(function() {
+                //         return $('[tabindex="0"]:eq(3)')[0].value !== '-';
+                //     });    
                 // });
                 casper.evaluate(function() {
                     $('[tabindex="0"]:eq(3)')[0].value = '-';
@@ -119,22 +133,22 @@ var scraper = function(config) {
             casper.waitFor(function() {
                 return casper.evaluate(function() {
                     return $('[tabindex="0"]:eq(3)')[0].value !== '-';
-                });    
-            },function(){}, function(){},3000);
+                });
+            }, function() {}, function() {}, 3000);
 
             readFloat('[tabindex="0"]:eq(3)', setField('earlyUnitPrice'));
 
-            casper.then(function(){
-                if(isNaN(self.earlyUnitPrice)){
-                    casper.waitFor(function(){
+            casper.then(function() {
+                if (isNaN(self.earlyUnitPrice)) {
+                    casper.waitFor(function() {
                         return !isIndicator();
                     });
                     readFloat('[tabindex="0"]:eq(3)', setField('earlyUnitPrice'));
                 }
             });
 
-            casper.then(function(){
-                if(!isNaN(self.earlyUnitPrice)){
+            casper.then(function() {
+                if (!isNaN(self.earlyUnitPrice)) {
                     self.unitPrice = self.earlyUnitPrice;
                 }
             });
@@ -163,30 +177,10 @@ var scraper = function(config) {
 
         casper.then(function() {
             if (self.iteration == 0) {
-                casper.then(function() {
-
-                    function checkInitFlag() {
-                        if (initFlag) {
-                            console.log('wait');
-                            casper.wait(5000, function() {
-                                checkInitFlag();
-                            });
-                        } else {
-                            initFlag = true;
-                        }
-                    };
-                    checkInitFlag();
-
-                });
                 initGame();
-                casper.then(function() {
-                    initFlag = false;
-                });
             }
         });
         clickDecisions();
-
-        // click('div[class="v-caption"]:contains(Decyzje)');
 
         casper.waitFor(function() {
             return casper.evaluate(function() {
@@ -197,36 +191,26 @@ var scraper = function(config) {
         });
 
         casper.then(function() {
-            if(!values.volume){
-                console.log(values.volume+' WTFFFFFFFFFFFF');
+            if (!values.volume) {
                 values.volume = Math.floor(0.8 * self.demand);
             }
             setVolume(values.volume);
-
-            // self.oldVal = self.oldVal || {};
-
             // function setIfNot(func, label) {
             //     if (self.oldVal[label] !== values[label]) {
             //         func(values[label]);
             //     }
             // }
-            // setIfNot(setQuality, 'quality');
-            // setIfNot(setSellPrice, 'price');
-            // setIfNot(setTv, 'tv')
-            // setIfNot(setInternet, 'internet');
-            // setIfNot(setWarehouse, 'warehouse');
             setQuality(values.quality);
             setSellPrice(values.price);
             setTv(values.tv);
             setInternet(values.internet);
             setWarehouse(values.warehouse);
 
-            console.log('vol' + values.volume);
             self.oldVal = values;
         });
-        readInt('input[tabindex="0"][maxlength="12"]', setField('money'));
-        readInt('[tabindex="0"]:eq(30)', setField('moneyLeft'));
-        readFloat('[tabindex="0"]:eq(3)', setField('unitPrice'));
+        readInt(CASH_SELECT, setField('money'));
+        readInt(FREE_CASH_SELECT, setField('moneyLeft'));
+        readFloat(UPRICE_SELECT, setField('unitPrice'));
 
         casper.then(function() {
             self.moneySpent = self.money - self.moneyLeft;
@@ -234,61 +218,43 @@ var scraper = function(config) {
 
         //commit
         casper.then(function() {
-            click(':contains("Zatwierdź")[class="v-button v-widget"]', 800);
+            click(COMMIT_SELECT, 800);
         });
-        click('div[class="v-caption"]:contains(Wyniki)');
+        click(SCORES_TAB_SELECT);
         casper.waitForText('Udział w rynku');
         casper.then(function() {
-            casper.evaluate(function() {
-                // $('[tabindex="0"]:eq(3)')[0].value = '-';
-                $('[tabindex="0"]:eq(14)')[0].value = '-';
-            });
+            casper.evaluate(function(sel) {
+                $(sel)[0].value = '-';
+            }, GROSS_INC_SELECT);
         });
-        var noth = function(){};
+        readInt(GROSS_INC_SELECT, setField('oldIncome'));
         casper.waitFor(function() {
-            return casper.evaluate(function(oldinc,oldsold) {
-                return $('[tabindex="0"]:eq(3)')[0].value !=='-' &&
-                    $('[tabindex="0"]:eq(14)')[0].value !=='-';
-            });
-        },noth,noth,600000);
-        readInt('[tabindex="0"]:eq(14)', setField('income'));
-        readInt('[tabindex="0"]:eq(3)', setField('soldNum'));
+            return casper.evaluate(function(selinc, selnum) {
+                return $(selinc)[0].value !== '-' &&
+                    $(selnum)[0].value !== '-';
+            }, GROSS_INC_SELECT, SOLD_CT_SELECT);
+        }, _void, _void, 20000);
+        readInt(GROSS_INC_SELECT, setField('income'));
+        readInt(SOLD_CT_SELECT, setField('soldNum'));
 
-        casper.then(function(){
-            if(isNaN(self.income)){
-                casper.wait(10000,function(){
-                    readInt('[tabindex="0"]:eq(14)', setField('income'));
-                    readInt('[tabindex="0"]:eq(3)', setField('soldNum'));
-                })
+        casper.then(function() {
+            if (isNaN(self.income)) {
+                casper.wait(10000, function() {
+                    readInt(GROSS_INC_SELECT, setField('income'));
+                    readInt(SOLD_CT_SELECT, setField('soldNum'));
+                });
+            }
+            if (isNaN(self.income)) {
+                self.income = self.oldIncome;
             }
         });
 
-        // casper.wait(1000);
-        // function readAgain() {
-
-        //     casper.then(function() {
-        //         console.log('log: ' + self.income + ' ' + self.soldNum);
-        //         if (isNaN(self.income) || isNaN(self.soldNum)) {
-        //             casper.wait(1000, function() {
-        //                 readInt('[tabindex="0"]:eq(14)', setField('income'));
-        //                 readInt('[tabindex="0"]:eq(3)', setField('soldNum'));
-        //             });
-        //         }
-
-        //         casper.then(function() {
-        //             if (isNaN(self.income) || isNaN(self.soldNum)) {
-        //                 readAgain();
-        //             }
-        //         });
-        //     });
-        // };
-        // readAgain();
-
         casper.then(function() {
+
             self.iteration++;
             if (self.iteration >= self.rounds) {
                 self.iteration = 0;
-                click('div > a :contains("List gier")', 1000);
+                click(GAME_LIST_SELECT, 1000);
                 casper.waitForText('Filtruj');
             }
             self.soldRatio = self.soldNum / values.volume;
@@ -300,7 +266,25 @@ var scraper = function(config) {
                 return_rate: self.returnRate,
                 unit_price: self.unitPrice
             });
+
+            var results = ['money', self.money,
+                'moneyLeft', self.moneyLeft,
+                'moneySpent', self.moneySpent,
+                'uprice', self.unitPrice,
+                'price', values.price,
+                'quality', values.quality,
+                'grossInc', self.income,
+                'sold', self.soldNum,
+                'volume', values.volume,
+                'returnRate', self.returnRate,
+                'percSold', self.soldRatio
+            ];
+
+            msg.apply(null, results);
+            assert(self.moneySpent == (self.unitPrice * values.volume + PRODUCT_CONST_COST), 'Non-zero balance');
+
             writeRowToCsv(sample);
+            debug('run cb')
             callback(objUtils.copy(values, {
                 soldNum: self.soldNum,
                 soldRatio: self.soldRatio,
@@ -330,26 +314,25 @@ var scraper = function(config) {
             }, self.game);
         });
 
-        // casper.wait(2000);
         casper.waitFor(function() {
-            return casper.evaluate(function() {
-                return $('div[class="v-caption"]:contains(Decyzje)').is(':visible');
-            });
+            return casper.evaluate(function(sel) {
+                return $(sel).is(':visible');
+            }, DECISIONS_TAB_SELECT);
         })
     }
 
     function clickDecisions() {
-        click('div[class="v-caption"]:contains(Decyzje)', 1000);
+        click(DECISIONS_TAB_SELECT, 1000);
         casper.waitForText('luksusowy');
         casper.waitFor(function() {
-            return casper.evaluate(function() {
-                return $(':contains("Zatwierdź")[class="v-button v-widget"]').is(':visible');
-            });
+            return casper.evaluate(function(sel) {
+                return $(sel).is(':visible');
+            }, COMMIT_SELECT);
         })
 
     }
 
-    function waitForNotEqual(selector,val){
+    function waitForNotEqual(selector, val) {
         casper.waitFor(function() {
             return casper.evaluate(function() {
                 return $(selector)[0].value !== val;
@@ -357,12 +340,14 @@ var scraper = function(config) {
         });
     };
 
-    function isIndicator(){return casper.evaluate(function() {
-        var indic = $('[class="v-loading-indicator first"]').is(':visible');
-        indic = indic || $('[class="v-loading-indicator second v-loading-indicator-delay"]').is(':visible');
-        indic = indic || $('[class="v-loading-indicator third v-loading-indicator-wait"]').is(':visible');
-        return indic;
-    });};
+    function isIndicator() {
+        return casper.evaluate(function() {
+            var indic = $('[class="v-loading-indicator first"]').is(':visible');
+            indic = indic || $('[class="v-loading-indicator second v-loading-indicator-delay"]').is(':visible');
+            indic = indic || $('[class="v-loading-indicator third v-loading-indicator-wait"]').is(':visible');
+            return indic;
+        });
+    };
 
     var setParam = function(selector, val, eq) {
         var cval = '';
@@ -395,7 +380,7 @@ var scraper = function(config) {
             casper.wait(1500);
         };
         casper.then(thenFunc.bind(casper, selector, val, eq));
-        casper.waitFor(function(){
+        casper.waitFor(function() {
             return !isIndicator();
         })
         return true;
@@ -475,6 +460,23 @@ var scraper = function(config) {
             self[field] = val;
         }
     };
+
+    function msg() {
+        arr = Array.prototype.slice.apply(arguments);
+        console.log(arr.join(' '));
+    }
+
+    function debug(){
+        if(DEBUG_FLAG){
+            msg.apply(null,arguments);
+        }
+    }
+
+    function assert(cond, message) {
+        if (!cond) {
+            throw message;
+        }
+    }
 
 
     function writeRowToCsv(data) {
