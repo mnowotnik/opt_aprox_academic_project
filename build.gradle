@@ -10,6 +10,13 @@ task wrapper(type: Wrapper) {
     gradleVersion = '2.3'
 }
 
+task neural << {
+
+    mainClassName = 'wdec.approx.Main';
+    tasks.run.execute();
+
+}
+
 repositories{
     mavenCentral()
 }
