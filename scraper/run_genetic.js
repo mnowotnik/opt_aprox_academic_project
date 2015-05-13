@@ -29,18 +29,21 @@ genetic.select2 = Genetic.Select2.Tournament2;
 
 var features = (function() {
 
-    var commercialRate = samplingInfo(0, 0, 1000, null);
-    var tvRate = objUtils.copy(commercialRate, {
-        label: 'tv'
-    });
-    var internetRate = objUtils.copy(commercialRate, {
-        label: 'internet'
-    });
-    var warehouseRate = objUtils.copy(commercialRate, {
-        label: 'warehouse'
-    });
-    var qualityRate = samplingInfo(65, 90, 1, 'quality');
-    var priceRate = samplingInfo(10, 25, 1, 'price');
+    var commercialRate = samplingInfo(1000, 60000, 1000, null);
+    var tvRate = samplingInfo(10000, 60000, 1000, 'tv');
+        // objUtils.copy(commercialRate, {
+        // label: 'tv'
+    // });
+    var internetRate =  samplingInfo(40000, 60000, 1000, 'internet');
+        // objUtils.copy(commercialRate, {
+        // label: 'internet'
+    // });
+    var warehouseRate =  samplingInfo(0, 20000, 1000, 'warehouse');
+    // objUtils.copy(commercialRate, {
+        // label: 'warehouse'
+    // });
+    var qualityRate = samplingInfo(62, 70, 1, 'quality');
+    var priceRate = samplingInfo(21, 24, 1, 'price');
 
     return [qualityRate, tvRate, internetRate, warehouseRate, priceRate];
 })();
@@ -53,7 +56,9 @@ genetic.seed = function() {
         var gen = features[i];
         s[gen.label] = gen.randomSample();
     }
-    s.volume=10000;
+    // s.volume=10000;
+    
+    s.dynamicVolume = true;
     return s;
 };
 
@@ -68,6 +73,8 @@ genetic.mutate = function(entity) {
         mutated = features[i].max;
     }
     entity[label] = mutated;
+    if(label === 'quality')
+        console.log(drift,mutated);
     return entity;
 };
 
@@ -129,6 +136,10 @@ var scraper = (function() {
     var date = new Date();
     var ts = date.getDate() + '-' + date.getHours() + date.getMinutes();
     var config = objUtils.copy(credentials, {
+        extrapolate : true,
+        extra : {
+            moneyLimit : 906000
+        },
         rounds: 10,
         csv: {
             headers: headers,
@@ -156,11 +167,11 @@ genetic.fitness = function(entity) {
 
 var config = {
     "iterations": 40000,
-    "size": 29,
+    "size": 30,
     "crossover": 0.3,
-    "mutation": 0.3,
+    "mutation": 0.5,
     "skip": 0,
     "webWorkers": false
 };
 genetic.evolve(config);
-scraper.close();
+// scraper.close();

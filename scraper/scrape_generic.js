@@ -151,7 +151,7 @@ var scraper = function(config) {
                 if (!isNaN(self.earlyUnitPrice)) {
                     self.unitPrice = self.earlyUnitPrice;
                 }
-            });false
+            });
 
             casper.then(function() {
                 console.log(self.unitPrice);
@@ -191,7 +191,10 @@ var scraper = function(config) {
         });
 
         casper.then(function() {
-            if (!values.volume) {
+            if (!values.volume){
+                values.dynamicVolume = true; 
+            }
+            if (values.dynamicVolume) {
                 values.volume = Math.floor(0.8 * self.demand);
             }
             setVolume(values.volume);
@@ -212,21 +215,19 @@ var scraper = function(config) {
         readInt(FREE_CASH_SELECT, setField('moneyLeft'));
         readFloat(UPRICE_SELECT, setField('unitPrice'));
 
-        casper.then(function() {
-            self.moneySpent = self.money - self.moneyLeft;
-        });
-
         //commit
         casper.then(function() {
-            click(COMMIT_SELECT, 800);
+            click(COMMIT_SELECT, 1000);
         });
+
         click(SCORES_TAB_SELECT);
         casper.waitForText('Udział w rynku');
         readInt(GROSS_INC_SELECT, setField('oldIncome'));
         casper.then(function() {
-            casper.evaluate(function(sel) {
-                $(sel)[0].value = '-';
-            }, GROSS_INC_SELECT);
+            casper.evaluate(function(selinc,selnum) {
+                $(selinc)[0].value = '-';
+                $(selnum)[0].value = '-';
+            }, GROSS_INC_SELECT, SOLD_CT_SELECT);
         });
         casper.waitFor(function() {
             return casper.evaluate(function(selinc, selnum) {
@@ -238,19 +239,27 @@ var scraper = function(config) {
         readInt(SOLD_CT_SELECT, setField('soldNum'));
 
         casper.then(function() {
-            if (isNaN(self.income)) {
+            if (isNaN(self.income)){
                 casper.wait(5000, function() {
                     readInt(GROSS_INC_SELECT, setField('income'));
+                });
+            }
+            if(isNan(self.soldNum)){
+                casper.wait(2000, function() {
                     readInt(SOLD_CT_SELECT, setField('soldNum'));
                 });
             }
+                
         });
-        casper.then(function(){
+        casper.then(function() {
             if (isNaN(self.income)) {
                 self.income = self.oldIncome;
             }
-
+            if(isNan(self.soldNum)){
+                self.soldNum = self.oldSoldNum;
+            }
         });
+
 
         casper.then(function() {
 
@@ -261,7 +270,21 @@ var scraper = function(config) {
                 casper.waitForText('Filtruj');
             }
             self.soldRatio = self.soldNum / values.volume;
-            self.returnRate = self.income / self.moneySpent;
+            self.moneySpent = self.money - self.moneyLeft;
+            if (config.extrapolate) {
+                var moneySpent = values.tv + values.internet + values.warehouse + PRODUCT_CONST_COST;
+                var moneyLimit = config.extra.moneyLimit;
+                var unitPrice = self.unitPrice;
+                var volume = Math.round((moneyLimit-moneySpent)/unitPrice);
+                moneySpent += volume * unitPrice;
+                var income = Math.round(self.soldRatio * volume * values.price);
+                msg('spent',moneySpent,'inc', income,'vol',volume);
+                self.returnRate = income / moneySpent;
+            } else {
+                self.returnRate = self.income / self.moneySpent;
+            }
+
+
             var sample = objUtils.copy(values, {
                 sold_num: self.soldNum,
                 sold_ratio: self.soldRatio,
@@ -284,7 +307,6 @@ var scraper = function(config) {
             ];
 
             msg.apply(null, results);
-            assert(self.moneySpent == (self.unitPrice * values.volume + PRODUCT_CONST_COST), 'Non-zero balance');
 
             writeRowToCsv(sample);
             debug('run cb')
@@ -469,9 +491,9 @@ var scraper = function(config) {
         console.log(arr.join(' '));
     }
 
-    function debug(){
-        if(DEBUG_FLAG){
-            msg.apply(null,arguments);
+    function debug() {
+        if (DEBUG_FLAG) {
+            msg.apply(null, arguments);
         }
     }
 
