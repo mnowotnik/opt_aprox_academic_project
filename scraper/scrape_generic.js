@@ -245,7 +245,7 @@ var scraper = function(config) {
                 });
             }
         });
-        caper.then(function(){
+        caspr.then(function(){
             if (isNaN(self.income)) {
                 self.income = self.oldIncome;
             }
