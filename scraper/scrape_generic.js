@@ -213,7 +213,7 @@ var scraper = function(config) {
         casper.waitForText('Udział w rynku');
 
         readInt(GROSS_INC_SELECT, setField('oldIncome'));
-        readInt(GROSS_INC_SELECT, setField('oldSoldNum'));
+        readInt(SOLD_CT_SELECT, setField('oldSoldNum'));
 
         casper.then(function() {
             casper.evaluate(function(selinc,selnum) {
