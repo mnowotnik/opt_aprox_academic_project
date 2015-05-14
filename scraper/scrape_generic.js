@@ -249,7 +249,7 @@ var scraper = function(config) {
             if (isNaN(self.income) && !isNaN(self.oldIncome)) {
                 self.income = self.oldIncome;
             }
-            if(isNan(self.soldNum && !isNaN(self.oldSoldNum))){
+            if(isNan(self.soldNum) && !isNaN(self.oldSoldNum)){
                 self.soldNum = self.oldSoldNum;
             }
         });
