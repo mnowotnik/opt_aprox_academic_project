@@ -226,7 +226,7 @@ var scraper = function(config) {
                 return $(selinc)[0].value !== '-' ||
                     $(selnum)[0].value !== '-';
             }, GROSS_INC_SELECT, SOLD_CT_SELECT);
-        }, _void, _void, 30000);
+        }, _void, _void, 15000);
         casper.wait(500);
 
         readInt(GROSS_INC_SELECT, setField('income'));
@@ -249,7 +249,7 @@ var scraper = function(config) {
             if (isNaN(self.income) && !isNaN(self.oldIncome)) {
                 self.income = self.oldIncome;
             }
-            if(isNan(self.soldNum) && !isNaN(self.oldSoldNum)){
+            if(isNaN(self.soldNum) && !isNaN(self.oldSoldNum)){
                 self.soldNum = self.oldSoldNum;
             }
         });

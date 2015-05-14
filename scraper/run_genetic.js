@@ -57,6 +57,11 @@ genetic.seed = function() {
         s[gen.label] = gen.randomSample();
     }
     s.volume=10000;
+    s.quality = 60;
+    s.price=20;
+    s.tv=0;
+    s.warehouse =0;
+    s.internet =0;
     
     s.dynamicVolume = false;
     return s;
