@@ -120,12 +120,6 @@ var scraper = function(config) {
                 if (setQuality(val.quality)) {
                     casper.wait(1000);
                 }
-                // waitForNotEqual('[tabindex="0"]:eq(3)','-');
-                // casper.waitFor(function() {
-                //     return casper.evaluate(function() {
-                //         return $('[tabindex="0"]:eq(3)')[0].value !== '-';
-                //     });    
-                // });
                 casper.evaluate(function() {
                     $('[tabindex="0"]:eq(3)')[0].value = '-';
                 });
@@ -198,11 +192,6 @@ var scraper = function(config) {
                 values.volume = Math.floor(0.8 * self.demand);
             }
             setVolume(values.volume);
-            // function setIfNot(func, label) {
-            //     if (self.oldVal[label] !== values[label]) {
-            //         func(values[label]);
-            //     }
-            // }
             setQuality(values.quality);
             setSellPrice(values.price);
             setTv(values.tv);
@@ -222,7 +211,10 @@ var scraper = function(config) {
 
         click(SCORES_TAB_SELECT);
         casper.waitForText('Udział w rynku');
+
         readInt(GROSS_INC_SELECT, setField('oldIncome'));
+        readInt(GROSS_INC_SELECT, setField('oldSoldNum'));
+
         casper.then(function() {
             casper.evaluate(function(selinc,selnum) {
                 $(selinc)[0].value = '-';
@@ -231,10 +223,12 @@ var scraper = function(config) {
         });
         casper.waitFor(function() {
             return casper.evaluate(function(selinc, selnum) {
-                return $(selinc)[0].value !== '-' &&
+                return $(selinc)[0].value !== '-' ||
                     $(selnum)[0].value !== '-';
             }, GROSS_INC_SELECT, SOLD_CT_SELECT);
-        }, _void, _void, 10000);
+        }, _void, _void, 30000);
+        casper.wait(500);
+
         readInt(GROSS_INC_SELECT, setField('income'));
         readInt(SOLD_CT_SELECT, setField('soldNum'));
 
@@ -252,10 +246,10 @@ var scraper = function(config) {
                 
         });
         casper.then(function() {
-            if (isNaN(self.income)) {
+            if (isNaN(self.income) && !isNaN(self.oldIncome)) {
                 self.income = self.oldIncome;
             }
-            if(isNan(self.soldNum)){
+            if(isNan(self.soldNum && !isNaN(self.oldSoldNum))){
                 self.soldNum = self.oldSoldNum;
             }
         });

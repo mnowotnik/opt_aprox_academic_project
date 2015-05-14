@@ -34,7 +34,7 @@ var features = (function() {
         // objUtils.copy(commercialRate, {
         // label: 'tv'
     // });
-    var internetRate =  samplingInfo(40000, 60000, 1000, 'internet');
+    var internetRate =  samplingInfo(20000, 60000, 1000, 'internet');
         // objUtils.copy(commercialRate, {
         // label: 'internet'
     // });
@@ -42,8 +42,8 @@ var features = (function() {
     // objUtils.copy(commercialRate, {
         // label: 'warehouse'
     // });
-    var qualityRate = samplingInfo(62, 70, 1, 'quality');
-    var priceRate = samplingInfo(21, 24, 1, 'price');
+    var qualityRate = samplingInfo(60, 70, 1, 'quality');
+    var priceRate = samplingInfo(19, 24, 1, 'price');
 
     return [qualityRate, tvRate, internetRate, warehouseRate, priceRate];
 })();
@@ -56,9 +56,9 @@ genetic.seed = function() {
         var gen = features[i];
         s[gen.label] = gen.randomSample();
     }
-    // s.volume=10000;
+    s.volume=10000;
     
-    s.dynamicVolume = true;
+    s.dynamicVolume = false;
     return s;
 };
 
@@ -138,7 +138,7 @@ var scraper = (function() {
     var config = objUtils.copy(credentials, {
         extrapolate : true,
         extra : {
-            moneyLimit : 906000
+            moneyLimit : 1500000
         },
         rounds: 10,
         csv: {
@@ -167,7 +167,7 @@ genetic.fitness = function(entity) {
 
 var config = {
     "iterations": 40000,
-    "size": 30,
+    "size": 40,
     "crossover": 0.3,
     "mutation": 0.5,
     "skip": 0,
