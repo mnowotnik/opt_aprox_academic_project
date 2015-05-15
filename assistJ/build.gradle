@@ -5,7 +5,7 @@ apply plugin: 'application';
 apply plugin: 'eclipse';
 apply plugin: 'maven';
 
-mainClassName = 'application.Main'
+mainClassName = 'wdec.Main'
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.3'
@@ -13,7 +13,7 @@ task wrapper(type: Wrapper) {
 
 task neural << {
 
-    mainClassName = 'wdec.Main';
+    mainClassName = 'opt.Test';
     tasks.run.execute();
 
 }
