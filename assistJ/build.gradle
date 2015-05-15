@@ -1,0 +1,35 @@
+
+
+apply plugin: 'java';
+apply plugin: 'application';
+apply plugin: 'eclipse';
+apply plugin: 'maven';
+
+mainClassName = 'application.Main'
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+}
+
+task neural << {
+
+    mainClassName = 'wdec.Main';
+    tasks.run.execute();
+
+}
+
+dependencies {
+    /* compile group: 'org.neuroph', name: 'neuroph-core', version: '2.9'; */
+    compile 'org.encog:encog-core:3.3.0';
+}
+
+repositories{
+    mavenLocal();
+    maven {
+        url "http://neuroph.sourceforge.net/maven2/";
+    }
+    mavenCentral();
+}
+compileJava{
+    options.encoding = 'UTF-8'
+}
