@@ -13,21 +13,18 @@ task wrapper(type: Wrapper) {
 
 task neural << {
 
-    mainClassName = 'opt.Test';
+    mainClassName = 'opt.RunTraining';
     tasks.run.execute();
 
 }
 
 dependencies {
-    /* compile group: 'org.neuroph', name: 'neuroph-core', version: '2.9'; */
-    compile 'org.encog:encog-core:3.3.0';
+    /* compile 'org.encog:encog-core:3.3.0'; */
+    compile(project(':encog-java-core'));
 }
 
 repositories{
     mavenLocal();
-    maven {
-        url "http://neuroph.sourceforge.net/maven2/";
-    }
     mavenCentral();
 }
 compileJava{
