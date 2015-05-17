@@ -36,7 +36,6 @@ import org.encog.util.Format;
  */
 public class ColumnDefinition implements Serializable {
 	private static final long serialVersionUID = 2020548649902446812L;
-
 	/**
 	 * The name of the column.
 	 */

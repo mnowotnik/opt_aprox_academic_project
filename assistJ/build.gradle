@@ -8,9 +8,9 @@ apply plugin: 'maven';
 mainClassName = 'wdec.Main'
 
 
-task neural << {
-    mainClassName = 'opt.RunTraining';
-    tasks.run.execute();
+task (neural, type: JavaExec){
+    main = 'opt.RunTraining';
+    classpath = sourceSets.main.runtimeClasspath;
 }
 
 task (solve, type: JavaExec){
