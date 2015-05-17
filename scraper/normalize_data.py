@@ -109,5 +109,5 @@ def print_counter(ct):
     for k in ct:
         print(ct[k],k)
 
-# normalize_uprice_samples('./data/solid/unit_price.csv')
-normalize_sold_ratio_samples('./data/solid/fin_genetic.csv')
+normalize_uprice_samples('./data/solid/unit_price.csv')
+# normalize_sold_ratio_samples('./data/solid/fin_genetic.csv')
