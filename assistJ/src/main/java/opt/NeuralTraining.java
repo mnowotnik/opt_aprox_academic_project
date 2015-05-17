@@ -45,7 +45,7 @@ public class NeuralTraining {
 		return new BasicNormalizationStrategy(0, 1, 0, 1);
 	}
 
-	public BasicNetwork trainUnitPriceApprox() {
+	public BasicNetwork trainUnitPriceApprox(final double err, final String arch) {
 		final int IN_N = 2, OUT_N = 1;
 
 		VersatileMLDataSet ds = initDataSet(UPRICE_CSV, DEF_CSV_FMT);
@@ -64,7 +64,7 @@ public class NeuralTraining {
 		// model.holdBackValidation(0.3, true,1001);
 		// model.selectTrainingType(ds);
 		BasicNetwork network = (BasicNetwork) (new MLMethodFactory().create(
-				MLMethodFactory.TYPE_FEEDFORWARD, NN_ARCH, IN_N, OUT_N));
+				MLMethodFactory.TYPE_FEEDFORWARD, arch, IN_N, OUT_N));
 		final ResilientPropagation train = new ResilientPropagation(network, ds);
 
 		NormalizationHelper helper = ds.getNormHelper();
@@ -76,7 +76,7 @@ public class NeuralTraining {
 			System.out
 					.println("Epoch #" + epoch + " Error:" + train.getError());
 			epoch++;
-		} while (train.getError() > ERR);
+		} while (train.getError() > err);
 		train.finishTraining();
 		// BasicNetwork network = (BasicNetwork) model.crossvalidate(5,true);
 
@@ -88,7 +88,7 @@ public class NeuralTraining {
 
 	}
 
-	public BasicNetwork trainPercSoldApprox() {
+	public BasicNetwork trainPercSoldApprox(final double err, final String arch) {
 		final int IN_N = 5, OUT_N = 1;
 
 		VersatileMLDataSet ds = initDataSet(PERCSOLD_CSV, DEF_CSV_FMT);
@@ -110,7 +110,7 @@ public class NeuralTraining {
 		// model.holdBackValidation(0.3, true, 1001);
 		// model.selectTrainingType(ds);
 		BasicNetwork network = (BasicNetwork) (new MLMethodFactory().create(
-				MLMethodFactory.TYPE_FEEDFORWARD, NN_ARCH, IN_N, OUT_N));
+				MLMethodFactory.TYPE_FEEDFORWARD, arch, IN_N, OUT_N));
 		final ResilientPropagation train = new ResilientPropagation(network, ds);
 
 		NormalizationHelper helper = ds.getNormHelper();
@@ -122,15 +122,15 @@ public class NeuralTraining {
 			System.out
 					.println("Epoch #" + epoch + " Error:" + train.getError());
 			epoch++;
-		} while (train.getError() > ERR);
+		} while (train.getError() > err);
 		train.finishTraining();
 		// BasicNetwork network = (BasicNetwork) model.crossvalidate(5, true);
 
 		persist(helper, Paths.get(PERCSOLD_HELPER_PATH), network,
 				Paths.get(PERCSOLD_MODEL_PATH));
 		EncogUtility.evaluate(network, ds);
-		System.out.println("Training error: "+
-		EncogUtility.calculateRegressionError(network, ds));
+		System.out.println("Training error: "
+				+ EncogUtility.calculateRegressionError(network, ds));
 		// System.out
 		// .println("Validation error: "
 		// + model.calculateError(network,
@@ -139,16 +139,18 @@ public class NeuralTraining {
 		// Display our normalization parameters.
 		System.out.println(helper.toString());
 
-		 EncogUtility.evaluate(network, ds);
+		EncogUtility.evaluate(network, ds);
 		// Display the final model.
 		System.out.println("Final model: " + network);
-		System.out.println(compute(new double[]{62,38000,60000,0,22}, network, helper));
-		System.out.println(compute(new double[]{62,0,60000,38000,22}, network, helper));
-		PercSoldFun percSoldFun = new PercSoldFun(helper,
-				network);
-		double p= percSoldFun.compute(62, 22, new Advertisments(0, 60000, 38000));
+		System.out.println(compute(new double[] { 62, 38000, 60000, 0, 22 },
+				network, helper));
+		System.out.println(compute(new double[] { 62, 0, 60000, 38000, 22 },
+				network, helper));
+		PercSoldFun percSoldFun = new PercSoldFun(helper, network);
+		double p = percSoldFun.compute(62, 22, new Advertisments(0, 60000,
+				38000));
 		System.out.println(p);
-		p= percSoldFun.compute(62, 22, new Advertisments(38000, 60000, 0));
+		p = percSoldFun.compute(62, 22, new Advertisments(38000, 60000, 0));
 		System.out.println(p);
 		return network;
 
@@ -193,9 +195,9 @@ public class NeuralTraining {
 			dataS[i] = Double.toString(input[i]);
 		}
 		helper.normalizeInputVector(dataS, data.getData(), false);
-//		System.out.println(data.getData(0) + " " + data.getData(1));
+		// System.out.println(data.getData(0) + " " + data.getData(1));
 		MLData output = network.compute(data);
-//		System.out.println(output.getData(0));
+		// System.out.println(output.getData(0));
 		String[] out = helper.denormalizeOutputVectorToString(output);
 		return Double.parseDouble(out[0]);
 

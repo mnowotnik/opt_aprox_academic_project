@@ -5,17 +5,10 @@ import org.encog.Encog;
 public class RunTraining {
 
 	public static void main(final String args[]) {
-//		SymbolicTraining st = new SymbolicTraining();
-//		st.trainUPriceFun();
-//		st.trainUPriceFun(ds);
-//		 NeuralTraining training = new NeuralTraining();
-//		 training.trainPercSoldApprox();
-//		 training.trainUnitPriceApprox();
-		// System.out.println(uPriceF.compute(100000, 68));
-//		Constraints constraints = new Constraints(0, 1, 300000);
-//		Solver solver = new Solver();
-//		solver.solve(constraints);
-//		Encog.getInstance().shutdown();
+		NeuralTraining training = new NeuralTraining();
+		training.trainPercSoldApprox(8e-5,"?:B->TANH->12:B->?");
+		training.trainUnitPriceApprox(5e-5,"?:B->TANH->20:B->?");
+		Encog.getInstance().shutdown();
 
 	}
 }

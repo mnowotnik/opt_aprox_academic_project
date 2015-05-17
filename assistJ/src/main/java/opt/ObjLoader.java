@@ -25,10 +25,8 @@ public class ObjLoader {
 			nnIs.close();
 			return h;
 		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		return new BasicNetwork();
 
 	}
 
@@ -43,10 +41,8 @@ public class ObjLoader {
 			helperIs.close();
 			return h;
 		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		return new NormalizationHelper();
 
 	}
 
@@ -61,10 +57,8 @@ public class ObjLoader {
 			nnIs.close();
 			return h;
 		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		return new BasicNetwork();
 	}
 
 	public NormalizationHelper loadNormHelperPercSold() {
@@ -78,9 +72,7 @@ public class ObjLoader {
 			helperIs.close();
 			return h;
 		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		return new NormalizationHelper();
 	}
 }

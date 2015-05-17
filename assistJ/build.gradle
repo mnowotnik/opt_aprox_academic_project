@@ -7,15 +7,20 @@ apply plugin: 'maven';
 
 mainClassName = 'wdec.Main'
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.3'
-}
 
 task neural << {
-
     mainClassName = 'opt.RunTraining';
     tasks.run.execute();
+}
 
+task (solve, type: JavaExec){
+    main = 'opt.Solver';
+    description = 'generate decision. Input : DEBT PERIOD CASH';
+    classpath = sourceSets.main.runtimeClasspath;
+    if (project.hasProperty('input')){
+        args(input.split(' '));
+        print(args)
+    }
 }
 
 dependencies {
