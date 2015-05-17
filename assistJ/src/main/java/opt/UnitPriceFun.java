@@ -28,12 +28,9 @@ public class UnitPriceFun {
 
 	}
 
-	public double compute(double volume,double quality){
+	synchronized public double compute(double volume,double quality){
 		MLData input = normalizeInput(volume,quality);
-		System.out.println(input.getData(0)+" "+input.getData(1));
 		MLData output = network.compute(input);
-		System.out.println(output.getData(0));
-		System.out.println(network.dumpWeights());
 		return denormalizeOutput(output);
 	}
 

@@ -27,7 +27,7 @@ public class PercSoldFun {
 
 
 	}
-	public double compute(double quality,double price,Advertisments ads){
+	synchronized public double compute(double quality,double price,Advertisments ads){
 		MLData input =  normalizeInput(quality,price,ads);
 		MLData output = network.compute(input);
 		return denormalizeOutput(output);
@@ -35,9 +35,9 @@ public class PercSoldFun {
 	}
 	
 	public double denormalizeOutput(MLData val){
-		ColumnDefinition perc = colMap.get("perc_sold");
-		nHelper.getNormStrategy().denormalizeColumn(perc, false, val, 0);
-		return val.getData(0);
+		ColumnDefinition perc = colMap.get("sold_ratio");
+		String d = nHelper.getNormStrategy().denormalizeColumn(perc, false, val, 0);
+		return Double.parseDouble(d);
 		
 	}
 	public MLData normalizeInput(double quality,double price,Advertisments ads){
@@ -48,10 +48,10 @@ public class PercSoldFun {
 		ColumnDefinition wareCol = colMap.get("warehouse");
 		MLData values = nHelper.allocateInputVector();
 		nHelper.getNormStrategy().normalizeColumn(qualityCol, true, quality, values.getData(), 0);
-		nHelper.getNormStrategy().normalizeColumn(priceCol, true, price, values.getData(), 1);
-		nHelper.getNormStrategy().normalizeColumn(tvCol, true, ads.tv, values.getData(), 2);
-		nHelper.getNormStrategy().normalizeColumn(internetCol, true, ads.internet, values.getData(), 3);
-		nHelper.getNormStrategy().normalizeColumn(wareCol, true, ads.warehouse, values.getData(), 4);
+		nHelper.getNormStrategy().normalizeColumn(tvCol, true, ads.tv, values.getData(), 1);
+		nHelper.getNormStrategy().normalizeColumn(internetCol, true, ads.internet, values.getData(), 2);
+		nHelper.getNormStrategy().normalizeColumn(wareCol, true, ads.warehouse, values.getData(), 3);
+		nHelper.getNormStrategy().normalizeColumn(priceCol, true, price, values.getData(), 4);
 		return values;
 	}
 }

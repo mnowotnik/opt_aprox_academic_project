@@ -20,6 +20,7 @@ task neural << {
 
 dependencies {
     /* compile 'org.encog:encog-core:3.3.0'; */
+    compile 'org.moeaframework:moeaframework:2.4';
     compile(project(':encog-java-core'));
 }
 
