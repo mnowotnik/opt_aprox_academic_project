@@ -30,20 +30,20 @@ genetic.select2 = Genetic.Select2.Tournament2;
 var features = (function() {
 
     var commercialRate = samplingInfo(1000, 60000, 1000, null);
-    var tvRate = samplingInfo(10000, 60000, 1000, 'tv');
+    var tvRate = samplingInfo(38000, 100000, 1000, 'tv');
         // objUtils.copy(commercialRate, {
         // label: 'tv'
     // });
-    var internetRate =  samplingInfo(20000, 60000, 1000, 'internet');
+    var internetRate =  samplingInfo(180000, 500000, 10000, 'internet');
         // objUtils.copy(commercialRate, {
         // label: 'internet'
     // });
-    var warehouseRate =  samplingInfo(0, 20000, 1000, 'warehouse');
+    var warehouseRate =  samplingInfo(8000, 100000, 1000, 'warehouse');
     // objUtils.copy(commercialRate, {
         // label: 'warehouse'
     // });
-    var qualityRate = samplingInfo(60, 70, 1, 'quality');
-    var priceRate = samplingInfo(19, 24, 1, 'price');
+    var qualityRate = samplingInfo(35, 60, 1, 'quality');
+    var priceRate = samplingInfo(18, 24, 1, 'price');
 
     return [qualityRate, tvRate, internetRate, warehouseRate, priceRate];
 })();
@@ -138,7 +138,7 @@ var scraper = (function() {
     var config = objUtils.copy(credentials, {
         extrapolate : true,
         extra : {
-            moneyLimit : 1500000
+            moneyLimit : 2000000
         },
         rounds: 10,
         csv: {

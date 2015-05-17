@@ -22,8 +22,8 @@ var pass = credentials.password;
 
 var values = (function() {
 
-    var qualityRate = samplingInfo(64, 74, 1, 'quality');
-    var volumeRate = samplingInfo(60000,100000, 1000, 'volume');
+    var qualityRate = samplingInfo(35, 45, 1, 'quality');
+    var volumeRate = samplingInfo(60000,200000, 1000, 'volume');
 
     var qmin = qualityRate.min;
     var qmax = qualityRate.max;
@@ -46,12 +46,14 @@ var values = (function() {
 })();
 
 var defHeaders = ['volume', 'quality','unit_price'];
+var date = new Date();
+var ts = date.getDate() + '-' + date.getHours() + date.getMinutes();
 var config = objUtils.copy(credentials, {
     players: 3,
     rounds: 5,
     csv: {
         headers: defHeaders,
-        path: 'uprice.csv',
+        path: 'data/uprice'+ts+'.csv',
         delim: '\t'
     }
 });
