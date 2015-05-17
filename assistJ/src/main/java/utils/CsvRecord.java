@@ -13,6 +13,9 @@ public class CsvRecord {
 	public String getValue(String key){
 		return values[valMap.get(key)];
 	}
+	public int getValueIdx(String key){
+		return valMap.get(key);
+	}
 
 	public CsvRecord(Map<String, Integer> valMap,String [] values) {
 		super();

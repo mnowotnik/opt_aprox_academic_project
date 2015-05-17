@@ -32,14 +32,13 @@ public class Solver {
 				percSoldNN);
 		this.upriceFun = upriceFun;
 		this.percSoldFun = percSoldFun;
-//		double p= percSoldFun.compute(62, 22, new Advertisments(0, 60000, 38000));
-//		System.out.println(p);
+		double p= percSoldFun.compute(60, 24, new Advertisments(9000,75000, 0));
+		System.out.println(p);
 //		p= percSoldFun.compute(62, 22, new Advertisments(38000, 60000, 0));
 //		System.out.println(p);
-//		InvestProblem investProblem = new InvestProblem(upriceFun, percSoldFun, new Constraints(0, 1, 300000));
-//		int i  = investProblem.netIncomeFunc(new int[]{73000,62,0,58000,0,22,80000});
-//		int e  = investProblem.totalExpensesFunc(new int[]{73000,62,0,58000,0,22,80000});
-//		System.out.println(i+" "+e);
+		InvestProblem investProblem = new InvestProblem(upriceFun, percSoldFun, new Constraints(0, 1, 300000));
+		int i  = investProblem.netIncomeFunc(new int[]{71000,60,9,75,0,24,800000,184000});
+		System.out.println(i);
 //0.8969652983087147
 //0.9405122256098115
 	}

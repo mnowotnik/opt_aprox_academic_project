@@ -22,6 +22,9 @@ public class CsvReader {
 			String [] headersTab = headers.split(delim);
 			Map<String,Integer>valMap = createValMap(headersTab);
 			while((line = br.readLine()) != null){
+				if(line.trim().equals("")){
+					continue;
+				}
 				CsvRecord csvR = new CsvRecord(valMap,line.split(delim));
 				rList.add(csvR);
 			}
