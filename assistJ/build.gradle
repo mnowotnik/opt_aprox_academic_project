@@ -15,7 +15,7 @@ task (neural, type: JavaExec){
 
 task (solve, type: JavaExec){
     main = 'opt.Solver';
-    description = 'generate decision. Input : DEBT PERIOD CASH';
+    description = 'generate decision. Input : -Pinput="DEBT PERIOD CASH"';
     classpath = sourceSets.main.runtimeClasspath;
     if (project.hasProperty('input')){
         args(input.split(' '));
