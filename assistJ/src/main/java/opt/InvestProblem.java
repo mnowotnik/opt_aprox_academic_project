@@ -12,14 +12,16 @@ public class InvestProblem extends AbstractProblem {
 
 	private final static int VAR_NUM = 8;
 	private final static int OBJ_NUM = 2;
-	private final static int CONS_NUM = 4;
+	private final static int CONS_NUM = 3;
 
 	private final static int MAX_VOL = 400000;
-	private final static int MIN_VOL = 1000;
+	private final static int MIN_VOL = 0;
 
-	private final static int MIN_QUAL = 60, MAX_QUAL = 85;
-	private final static int MIN_AD = 0, MAX_AD = 100;
+	private final static int MIN_QUAL = 35, MAX_QUAL = 88;
+
+	private final static int MIN_AD = 0, MAX_AD = 1000;// 0 - 10^6
 	private final static int AD_MULTI = 1000;
+
 	private final static int MIN_PRICE = 1, MAX_PRICE = 24;
 
 	// year
@@ -59,8 +61,18 @@ public class InvestProblem extends AbstractProblem {
 		int internet = AD_MULTI * vars[3];
 		int warehouse = vars[4];
 		int price = vars[5];
-		int loan = vars[6];
-		int inst = vars[7]; // debt instalment
+		int loan = (int) Math.floor((MAX_DEBT - periodConstraints.debt)
+				* vars[6] / 100);
+
+		vars[6] = loan;
+
+		int debt = periodConstraints.debt;
+		int period = periodConstraints.period;
+		int totalDebt = debt + loan;
+		int inst = vars[7] + calcMinInstalment(period, totalDebt);
+		;
+		// debt instalment
+		vars[7] = inst;
 
 		double soldRate = percSoldFun.compute(qual, price, new Advertisments(
 				tv, internet, warehouse));
@@ -70,12 +82,9 @@ public class InvestProblem extends AbstractProblem {
 		 * 0 - cash , 1 - debt , 2 - max instalment , 3 - positive netincome
 		 */
 
-		double[] constraints = new double[4];
+		double[] constraints = new double[CONS_NUM];
 
-		int period = periodConstraints.period;
 		int cash = periodConstraints.cash;
-		int debt = periodConstraints.debt;
-		int totalDebt = debt + loan;
 
 		int totalCash = cash + loan;
 		int totalExpenses = totalExpensesFunc(vars);
@@ -95,20 +104,19 @@ public class InvestProblem extends AbstractProblem {
 		}
 
 		// the instalment has to be in specific range
-		int minInst = calcMinInstalment(period, totalDebt);
-		if (inst < minInst || inst > calcMaxInstalment(period, totalDebt)) {
-			constraints[2] = minInst - inst;
+		if (inst > calcMaxInstalment(period, totalDebt)) {
+			constraints[2] = inst - calcMaxInstalment(period, totalDebt);
 		} else {
 			constraints[2] = 0;
 		}
 
 		// netIncome has to be positive
 		int netIncome = netIncomeFunc(vars, totalExpenses);
-		if (netIncome <= 0) {
-			constraints[3] = netIncome;
-		} else {
-			constraints[3] = 0;
-		}
+		// if (netIncome <= 0) {
+		// constraints[3] = netIncome;
+		// } else {
+		// constraints[3] = 0;
+		// }
 
 		solution.setConstraints(constraints);
 
@@ -138,26 +146,28 @@ public class InvestProblem extends AbstractProblem {
 		if (period == TOTAL_PERIODS) {
 			solution.setVariable(6, EncodingUtils.newInt(0, 0)); // loan
 		} else {
-			solution.setVariable(6, EncodingUtils.newInt(MIN_LOAN, MAX_LOAN)); // loan
+			solution.setVariable(6, EncodingUtils.newInt(0, 100)); // loan
 		}
 
-		int minInstalment = calcMinInstalment(periodConstraints.period,
+		// int minInstalment = calcMinInstalment(periodConstraints.period,
+		// periodConstraints.debt);
+		int minInstalment = calcMaxInstalment(periodConstraints.period,
 				periodConstraints.debt);
 
-		solution.setVariable(7, EncodingUtils.newInt(minInstalment, MAX_INST)); // debt
+		solution.setVariable(7, EncodingUtils.newInt(0, MAX_INST)); // debt
 		// payoff
 
 		return solution;
 	}
 
-	private int calcMaxInstalment(int period, int debt) {
+	public int calcMaxInstalment(int period, int debt) {
 		int periodsLeft = TOTAL_PERIODS - period + 1;
 		double interests = debt / periodsLeft;
 		interests *= DEBT_PERIOD_RATE;
 		return (int) Math.ceil(interests + debt);
 	}
 
-	private int calcMinInstalment(int period, int debt) {
+	public static int calcMinInstalment(int period, int debt) {
 		int periodsLeft = TOTAL_PERIODS - period + 1;
 		double minInstalment = debt / periodsLeft;
 		minInstalment += (debt * DEBT_PERIOD_RATE);
@@ -192,16 +202,17 @@ public class InvestProblem extends AbstractProblem {
 		// bank interests
 		grossIncome += (Math.floor(cashLeft * BANK_PERIOD_RATE));
 
+		grossIncome += inst;// balance out
+
 		// EXPENDITURE
 		grossIncome -= totalExpenses;
 		grossIncome -= AMORT;
 
-		int netIncome = (int) Math.floor(grossIncome * (1 - TAX_RATE)); // taxation
-
-		if (netIncome > 350000) {
-			System.out.println(qual + " " + price + " " + soldRatio);
-			System.out.println(tv + " " + internet + " " + warehouse);
+		int netIncome = grossIncome;
+		if (netIncome > 0) {
+			netIncome = (int) Math.floor(netIncome * (1 - TAX_RATE)); // taxation
 		}
+
 		return netIncome;
 	}
 

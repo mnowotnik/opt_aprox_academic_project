@@ -12,9 +12,10 @@ public class Solver {
 	private final UnitPriceFun upriceFun;
 	private final PercSoldFun percSoldFun;
 
-	private final static String ALGORITHM = "NSGAIII";
-	private final static int MAX_EVALS = 50000;
+	private final static String ALGORITHM = "eNSGAII";
+	private final static int MAX_EVALS = 400000;
 	private final static int AD_MULTI = 1000;
+	private final static int MAX_DEBT = 800000;
 
 	public static void main(String[] args) {
 		if (args.length != 3) {
@@ -36,11 +37,14 @@ public class Solver {
 		System.out.println("instalment:" + decision.inputArgs.instalment);
 
 		double risk = 1.0 - decision.objectives.percSold;
-		System.out.println("netIncome:" + decision.objectives.netIncome
-				+ " risk:" + risk);
+		System.out.println("Objectives");
+		System.out.println("- realNetIncome:" + decision.objectives.netIncome);
+		double wdecIncome = convertToWdecIncome(decision.objectives.netIncome,
+				decision.inputArgs.instalment);
+		System.out.println("- wdecNetIncome:" + Math.round(wdecIncome));
+		System.out.println("- risk:" + risk);
 
 	}
-	
 
 	public Solver(UnitPriceFun upriceFun, PercSoldFun percSoldFun) {
 		this.upriceFun = upriceFun;
@@ -60,38 +64,28 @@ public class Solver {
 		UnitPriceFun upriceFun = new UnitPriceFun(upriceNormHelper, upriceNN);
 		this.upriceFun = upriceFun;
 		this.percSoldFun = percSoldFun;
-		// double p= percSoldFun.compute(60, 24, new Advertisments(9000,75000,
-		// 0));
-		// System.out.println(p);
-		// p= percSoldFun.compute(62, 22, new Advertisments(38000, 60000, 0));
-		// System.out.println(p);
-		// InvestProblem investProblem = new InvestProblem(upriceFun,
-		// percSoldFun, new Constraints(0, 1, 300000));
-		// int i = investProblem.netIncomeFunc(new
-		// int[]{71000,60,9,75,0,24,800000,184000});
-		// System.out.println(i);
-		// 0.8969652983087147
-		// 0.9405122256098115
 	}
 
 	public Decision solve(Constraints constraints) {
+		System.out.println("Solving...");
 		Object[] args = new Object[] { upriceFun, percSoldFun, constraints };
 
 		NondominatedPopulation res = new Executor()
 				.withProblemClass(InvestProblem.class, args)
 				.withAlgorithm(ALGORITHM).withMaxEvaluations(MAX_EVALS)
+				.withProperty("populationSize", "500")
+				// .withProperty("pm.rate", "0.3")
 				.distributeOnAllCores().run();
 
-		// for (Solution solution : res) {
-		// System.out.println(solution.getObjective(0) + " "
-		// + (1-solution.getObjective(1)));
-		// int [] d = (EncodingUtils.getInt(solution));
-		// for(int i=0;i<d.length;i++){
-		// System.out.print(d[i]+" ");
-		// }
-		// System.out.println();
-		// }
-		Solution solution = res.get(0);
+		double netInc = 0;
+		int dec = 0;
+		for (int i = 0; i < res.size(); i++) {
+			if (res.get(i).getObjective(0) > netInc) {
+				dec = i;
+				netInc = res.get(i).getObjective(0);
+			}
+		}
+		Solution solution = res.get(dec);
 
 		int[] vars = EncodingUtils.getInt(solution);
 		int volume = vars[0];
@@ -100,8 +94,10 @@ public class Solver {
 		int internet = vars[3] * AD_MULTI;
 		int warehouse = vars[4] * AD_MULTI;
 		int price = vars[5];
-		int loan = vars[6];
-		int instalment = vars[7];
+		int loan = (int) ((double) vars[6] / 100 * MAX_DEBT);
+		int instalment = vars[7]
+				+ InvestProblem.calcMinInstalment(constraints.period, loan
+						+ constraints.debt);
 		InputArgs iArgs = new InputArgs(volume, quality, price, loan,
 				instalment, new Advertisments(tv, internet, warehouse));
 		Objectives objectives = new Objectives(-1 * solution.getObjective(0),
@@ -112,4 +108,13 @@ public class Solver {
 
 	}
 
+	private static double convertToWdecIncome(double netInc, double inst) {
+		netInc /= (1 - 0.19);
+		netInc -= inst;
+		if (netInc < 0) {
+			return netInc;
+		}
+		return (1 - 0.19) * netInc;
+
+	}
 }

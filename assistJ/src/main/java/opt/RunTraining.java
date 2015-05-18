@@ -6,8 +6,8 @@ public class RunTraining {
 
 	public static void main(final String args[]) {
 		NeuralTraining training = new NeuralTraining();
-		training.trainPercSoldApprox(8e-5,"?:B->TANH->12:B->?");
-		training.trainUnitPriceApprox(5e-5,"?:B->TANH->20:B->?");
+		training.trainPercSoldApprox(1e-4,"?:B->TANH->9:B->?");
+		training.trainUnitPriceApprox(1e-3,"?:B->TANH->9:B->?");
 		Encog.getInstance().shutdown();
 
 	}
