@@ -36,6 +36,7 @@ public class Solver {
 		System.out.println("loan:" + decision.inputArgs.loan);
 		System.out.println("instalment:" + decision.inputArgs.instalment);
 
+
 		double risk = 1.0 - decision.objectives.percSold;
 		System.out.println("Objectives");
 		System.out.println("- realNetIncome:" + decision.objectives.netIncome);
@@ -86,7 +87,12 @@ public class Solver {
 			}
 		}
 		Solution solution = res.get(dec);
-
+//		System.out.println("gross:" + solution.getAttribute("gross"));
+//		System.out.println("prod:" + solution.getAttribute("prod"));
+//		System.out.println("bank:" + solution.getAttribute("bank"));
+//		System.out.println("resell:" + solution.getAttribute("resell"));
+//		System.out.println("totalcost:" + solution.getAttribute("totalcost"));
+//		System.out.println("unitprice:" + solution.getAttribute("unitPrice"));
 		int[] vars = EncodingUtils.getInt(solution);
 		int volume = vars[0];
 		int quality = vars[1];

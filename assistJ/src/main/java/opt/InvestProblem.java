@@ -12,7 +12,7 @@ public class InvestProblem extends AbstractProblem {
 
 	private final static int VAR_NUM = 8;
 	private final static int OBJ_NUM = 2;
-	private final static int CONS_NUM = 3;
+	private final static int CONS_NUM = 4;
 
 	private final static int MAX_VOL = 400000;
 	private final static int MIN_VOL = 0;
@@ -56,10 +56,10 @@ public class InvestProblem extends AbstractProblem {
 	public void evaluate(Solution solution) {
 		int[] vars = EncodingUtils.getInt(solution);
 		int vol = vars[0];
-		int qual = AD_MULTI * vars[1];
+		int qual = vars[1];
 		int tv = AD_MULTI * vars[2];
 		int internet = AD_MULTI * vars[3];
-		int warehouse = vars[4];
+		int warehouse = AD_MULTI * vars[4];
 		int price = vars[5];
 		int loan = (int) Math.floor((MAX_DEBT - periodConstraints.debt)
 				* vars[6] / 100);
@@ -112,11 +112,37 @@ public class InvestProblem extends AbstractProblem {
 
 		// netIncome has to be positive
 		int netIncome = netIncomeFunc(vars, totalExpenses);
-		// if (netIncome <= 0) {
-		// constraints[3] = netIncome;
-		// } else {
-		// constraints[3] = 0;
-		// }
+		 if (netIncome <= 0) {
+		 constraints[3] = netIncome;
+		 } else {
+		 constraints[3] = 0;
+		 }
+
+//		double soldRatio = percSoldFun.compute(qual, price, new Advertisments(
+//				tv, internet, warehouse));
+//
+//		int soldNum = (int) Math.floor(soldRatio * vol);
+//
+//		double unitPrice = upriceFun.compute(vol, qual);
+//
+//		int cashLeft = periodConstraints.cash + loan - totalExpenses;
+//
+//		int grossIncome = 0;
+//
+//		// INCOME
+//		grossIncome += (soldNum * price); // gross sale income
+//		// resold units
+//		grossIncome += (Math.floor((vol - soldNum) * unitPrice * RESELL_RATE));
+//		// bank interests
+//		grossIncome += (Math.floor(cashLeft * BANK_PERIOD_RATE));
+//
+//		grossIncome += inst;// balance out
+//		solution.setAttribute("gross",grossIncome);
+//		solution.setAttribute("unitPrice",unitPrice);
+//		solution.setAttribute("resell",(Math.floor((vol - soldNum) * unitPrice * RESELL_RATE)));
+//		solution.setAttribute("bank", (Math.floor(cashLeft * BANK_PERIOD_RATE)));
+//		solution.setAttribute("prod",vol *unitPrice);
+//		solution.setAttribute("totalcost",totalExpenses);
 
 		solution.setConstraints(constraints);
 
@@ -228,7 +254,7 @@ public class InvestProblem extends AbstractProblem {
 		double unitPrice = upriceFun.compute(vol, qual);
 
 		int ads = tv + internet + warehouse;
-		int productionCost = (int) Math.floor(vol * unitPrice);
+		int productionCost = (int) Math.ceil(vol * unitPrice);
 		productionCost += CONST_COST;
 
 		int totalExpenses = inst + ads + productionCost;
