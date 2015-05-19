@@ -70,7 +70,7 @@ public class InvestProblem extends AbstractProblem {
 		int period = periodConstraints.period;
 		int totalDebt = debt + loan;
 		int inst = vars[7] + calcMinInstalment(period, totalDebt);
-		;
+
 		// debt instalment
 		vars[7] = inst;
 
@@ -86,7 +86,7 @@ public class InvestProblem extends AbstractProblem {
 
 		int cash = periodConstraints.cash;
 
-		int totalCash = cash + loan;
+		int totalCash = cash + loan - inst;
 		int totalExpenses = totalExpensesFunc(vars);
 
 		// you cannot spend more than you have
@@ -111,38 +111,20 @@ public class InvestProblem extends AbstractProblem {
 		}
 
 		// netIncome has to be positive
-		int netIncome = netIncomeFunc(vars, totalExpenses);
-		 if (netIncome <= 0) {
-		 constraints[3] = netIncome;
-		 } else {
-		 constraints[3] = 0;
-		 }
+		int report[] = new int[3];
+		int netIncome = netIncomeFunc(vars, report);
+		if (netIncome <= 0) {
+			constraints[3] = netIncome;
+		} else {
+			constraints[3] = 0;
+		}
 
-//		double soldRatio = percSoldFun.compute(qual, price, new Advertisments(
-//				tv, internet, warehouse));
-//
-//		int soldNum = (int) Math.floor(soldRatio * vol);
-//
-//		double unitPrice = upriceFun.compute(vol, qual);
-//
-//		int cashLeft = periodConstraints.cash + loan - totalExpenses;
-//
-//		int grossIncome = 0;
-//
-//		// INCOME
-//		grossIncome += (soldNum * price); // gross sale income
-//		// resold units
-//		grossIncome += (Math.floor((vol - soldNum) * unitPrice * RESELL_RATE));
-//		// bank interests
-//		grossIncome += (Math.floor(cashLeft * BANK_PERIOD_RATE));
-//
-//		grossIncome += inst;// balance out
-//		solution.setAttribute("gross",grossIncome);
-//		solution.setAttribute("unitPrice",unitPrice);
-//		solution.setAttribute("resell",(Math.floor((vol - soldNum) * unitPrice * RESELL_RATE)));
-//		solution.setAttribute("bank", (Math.floor(cashLeft * BANK_PERIOD_RATE)));
-//		solution.setAttribute("prod",vol *unitPrice);
-//		solution.setAttribute("totalcost",totalExpenses);
+		solution.setAttribute("grossSalesIncome", report[0]);
+		solution.setAttribute("primeCosts", report[1]);
+		solution.setAttribute("salesIncome", report[2]);
+
+		double unitPrice = upriceFun.compute(vol, qual);
+		solution.setAttribute("unitPrice", unitPrice);
 
 		solution.setConstraints(constraints);
 
@@ -155,7 +137,7 @@ public class InvestProblem extends AbstractProblem {
 	}
 
 	public int netIncomeFunc(int[] vars) {
-		return netIncomeFunc(vars, totalExpensesFunc(vars));
+		return netIncomeFunc(vars, new int[0]);
 	}
 
 	@Override
@@ -174,11 +156,6 @@ public class InvestProblem extends AbstractProblem {
 		} else {
 			solution.setVariable(6, EncodingUtils.newInt(0, 100)); // loan
 		}
-
-		// int minInstalment = calcMinInstalment(periodConstraints.period,
-		// periodConstraints.debt);
-		int minInstalment = calcMaxInstalment(periodConstraints.period,
-				periodConstraints.debt);
 
 		solution.setVariable(7, EncodingUtils.newInt(0, MAX_INST)); // debt
 		// payoff
@@ -200,7 +177,8 @@ public class InvestProblem extends AbstractProblem {
 		return (int) Math.ceil(minInstalment);
 	}
 
-	private int netIncomeFunc(int[] vars, int totalExpenses) {
+	private int netIncomeFunc(int[] vars, int[] report) {
+		int totalExpenses = futureExpensesFunc(vars);
 		int vol = vars[0];
 		int qual = vars[1];
 		int tv = AD_MULTI * vars[2];
@@ -217,7 +195,7 @@ public class InvestProblem extends AbstractProblem {
 
 		double unitPrice = upriceFun.compute(vol, qual);
 
-		int cashLeft = periodConstraints.cash + loan - totalExpenses;
+		int cashLeft = periodConstraints.cash + loan - totalExpenses - inst;
 
 		int grossIncome = 0;
 
@@ -225,14 +203,20 @@ public class InvestProblem extends AbstractProblem {
 		grossIncome += (soldNum * price); // gross sale income
 		// resold units
 		grossIncome += (Math.floor((vol - soldNum) * unitPrice * RESELL_RATE));
+
+		if (report.length == 3) {
+			int primeCosts = totalExpenses;
+			report[0] = grossIncome;
+			report[1] = primeCosts;
+			report[2] = grossIncome - primeCosts;
+		}
 		// bank interests
 		grossIncome += (Math.floor(cashLeft * BANK_PERIOD_RATE));
 
-		grossIncome += inst;// balance out
-
 		// EXPENDITURE
 		grossIncome -= totalExpenses;
-		grossIncome -= AMORT;
+		// LIABILITIES
+		grossIncome -= calcLiabilities(vars);
 
 		int netIncome = grossIncome;
 		if (netIncome > 0) {
@@ -242,14 +226,21 @@ public class InvestProblem extends AbstractProblem {
 		return netIncome;
 	}
 
+	private int calcLiabilities(int[] vars) {
+		int loan = vars[6];
+		int inst = vars[7];
+		int debt = periodConstraints.debt;
+		int period = periodConstraints.period;
+		return inst - calcMinInstalment(period, loan + debt);
+
+	}
+
 	public int totalExpensesFunc(int[] vars) {
 		int vol = vars[0];
 		int qual = vars[1];
 		int tv = AD_MULTI * vars[2];
 		int internet = AD_MULTI * vars[3];
 		int warehouse = AD_MULTI * vars[4];
-		int loan = vars[6];
-		int inst = vars[7]; // debt instalment
 
 		double unitPrice = upriceFun.compute(vol, qual);
 
@@ -257,7 +248,11 @@ public class InvestProblem extends AbstractProblem {
 		int productionCost = (int) Math.ceil(vol * unitPrice);
 		productionCost += CONST_COST;
 
-		int totalExpenses = inst + ads + productionCost;
+		int totalExpenses = ads + productionCost;
 		return totalExpenses;
+	}
+
+	public int futureExpensesFunc(int[] vars) {
+		return totalExpensesFunc(vars) + (int) AMORT;
 	}
 }

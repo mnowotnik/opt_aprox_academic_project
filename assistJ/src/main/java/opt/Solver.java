@@ -27,15 +27,23 @@ public class Solver {
 		int cash = Integer.parseInt(args[2]);
 		Constraints constraints = new Constraints(debt, period, cash);
 		Decision decision = solver.solve(constraints);
-		System.out.println("volume:" + decision.inputArgs.volume);
-		System.out.println("quality:" + decision.inputArgs.quality);
-		System.out.println("tv:" + decision.inputArgs.ads.tv);
-		System.out.println("internet:" + decision.inputArgs.ads.internet);
-		System.out.println("warehouse:" + decision.inputArgs.ads.warehouse);
-		System.out.println("price:" + decision.inputArgs.price);
-		System.out.println("loan:" + decision.inputArgs.loan);
-		System.out.println("instalment:" + decision.inputArgs.instalment);
+		System.out.println("Decision");
+		System.out.println("- volume:" + decision.inputArgs.volume);
+		System.out.println("- quality:" + decision.inputArgs.quality);
+		System.out.println("- tv:" + decision.inputArgs.ads.tv);
+		System.out.println("- internet:" + decision.inputArgs.ads.internet);
+		System.out.println("- warehouse:" + decision.inputArgs.ads.warehouse);
+		System.out.println("- price:" + decision.inputArgs.price);
+		System.out.println("- loan:" + decision.inputArgs.loan);
+		System.out.println("- instalment:" + decision.inputArgs.instalment);
 
+		System.out.println("Parameters");
+		System.out.println("- unitPrice:" + decision.parameters.unitPrice);
+		System.out.println("Financial report");
+		System.out.println("- grossSalesIncome:"
+				+ decision.report.grossSalesIncome);
+		System.out.println("- primeCosts:" + decision.report.primeCosts);
+		System.out.println("- salesIncome:" + decision.report.salesIncome);
 
 		double risk = 1.0 - decision.objectives.percSold;
 		System.out.println("Objectives");
@@ -87,12 +95,14 @@ public class Solver {
 			}
 		}
 		Solution solution = res.get(dec);
-//		System.out.println("gross:" + solution.getAttribute("gross"));
-//		System.out.println("prod:" + solution.getAttribute("prod"));
-//		System.out.println("bank:" + solution.getAttribute("bank"));
-//		System.out.println("resell:" + solution.getAttribute("resell"));
-//		System.out.println("totalcost:" + solution.getAttribute("totalcost"));
-//		System.out.println("unitprice:" + solution.getAttribute("unitPrice"));
+		// System.out.println("gross:" + solution.getAttribute("gross"));
+		// System.out.println("prod:" + solution.getAttribute("prod"));
+		// System.out.println("bank:" + solution.getAttribute("bank"));
+		// System.out.println("resell:" + solution.getAttribute("resell"));
+		// System.out.println("totalcost:" +
+		// solution.getAttribute("totalcost"));
+		// System.out.println("unitprice:" +
+		// solution.getAttribute("unitPrice"));
 		int[] vars = EncodingUtils.getInt(solution);
 		int volume = vars[0];
 		int quality = vars[1];
@@ -100,7 +110,7 @@ public class Solver {
 		int internet = vars[3] * AD_MULTI;
 		int warehouse = vars[4] * AD_MULTI;
 		int price = vars[5];
-		int loan = (int) ((double) vars[6] / 100 * MAX_DEBT);
+		int loan = (int) ((double) vars[6] / 100 * (MAX_DEBT - constraints.debt));
 		int instalment = vars[7]
 				+ InvestProblem.calcMinInstalment(constraints.period, loan
 						+ constraints.debt);
@@ -108,7 +118,15 @@ public class Solver {
 				instalment, new Advertisments(tv, internet, warehouse));
 		Objectives objectives = new Objectives(-1 * solution.getObjective(0),
 				1 - solution.getObjective(1));
-		Decision decision = new Decision(iArgs, objectives);
+
+		int grossSalesIncome = (int) solution.getAttribute("grossSalesIncome");
+		int primeCosts = (int) solution.getAttribute("primeCosts");
+		int salesIncome = (int) solution.getAttribute("salesIncome");
+		Report report = new Report(grossSalesIncome, primeCosts, salesIncome);
+
+		double unitPrice = (double) solution.getAttribute("unitPrice");
+		Parameters parameters = new Parameters(unitPrice);
+		Decision decision = new Decision(iArgs, objectives, report, parameters);
 
 		return decision;
 

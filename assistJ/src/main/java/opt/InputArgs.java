@@ -2,10 +2,10 @@ package opt;
 
 public class InputArgs {
 
-	public final double volume, quality, price, loan, instalment;
+	public final int volume, quality, price, loan, instalment;
 
-	public InputArgs(double volume, double quality, double price, double loan,
-			double instalment, Advertisments ads) {
+	public InputArgs(int volume, int quality, int price, int loan,
+			int instalment, Advertisments ads) {
 		super();
 		this.volume = volume;
 		this.quality = quality;
