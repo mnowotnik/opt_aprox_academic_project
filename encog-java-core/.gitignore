@@ -3,7 +3,7 @@
 .settings
 .DS_Store
 .gradle
-target
+/target
 local.properties
 encog.*
 iris_*
