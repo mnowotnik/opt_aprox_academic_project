@@ -2,6 +2,8 @@ package wdec;
 
 import java.math.BigDecimal;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import opt.Decision;
@@ -10,9 +12,13 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.Glow;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
 public class GuiController implements Initializable, CalcInterface
@@ -21,6 +27,7 @@ public class GuiController implements Initializable, CalcInterface
 	CalcInterface afterCalc = this;
 	double glowLevel;
 	boolean glowUp;
+	List<Decision> decisions;
 	
 	@FXML
 	private Button calculateButton;
@@ -81,10 +88,15 @@ public class GuiController implements Initializable, CalcInterface
 	
 	@FXML
 	private Pane calculatingInfo;
+	
+	@FXML
+	private LineChart<Number, Number> lineChart;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1)
 	{		
+		lineChart.setLegendVisible(false);
+		
 		calculateButton.setOnAction(new EventHandler<ActionEvent>()
 		{
 
@@ -106,14 +118,11 @@ public class GuiController implements Initializable, CalcInterface
 			}
 
 		});
-
-	}
+}
 
 	@Override
 	public void fillTextFields(Decision decision)
-	{
-		calculatingInfo.setVisible(false);
-		
+	{	
 		volumeTextField.setText(Integer.toString(decision.inputArgs.volume));
 		qualityTextField.setText(Integer.toString(decision.inputArgs.quality));
 		tvTextField.setText(Double.toString(decision.inputArgs.ads.tv));
@@ -140,9 +149,6 @@ public class GuiController implements Initializable, CalcInterface
 		wdecNetIncomeTextField.setText(Double.toString(Math.round(wdecIncome)));
 
 		riskTextField.setText(Double.toString(formattedRisk)+'%');
-		
-		calculateButton.setDisable(false);
-		
 	}
 
 	@Override
@@ -163,4 +169,66 @@ public class GuiController implements Initializable, CalcInterface
 		}
 		calculatingInfo.setEffect(new Glow(glowLevel));
 	}
+
+	@Override
+	public void addDecisions(List<Decision> decisions)
+	{
+		
+		lineChart.getData().clear();
+		
+		lineChart.getXAxis().setAutoRanging(true);
+        lineChart.getYAxis().setAutoRanging(true);
+		
+		XYChart.Series<Number,Number> series1 = new XYChart.Series<Number, Number>();
+
+		List<Node> nodeList = new ArrayList<Node>();
+		List<Decision> filteredDecisionList = new ArrayList<Decision>();
+		int intTemp = 0;
+		
+		for (Decision decision : decisions) {
+			double income = decision.report.salesIncome;
+			double risk = 1.0 - decision.objectives.percSold;
+			double formattedRisk = new BigDecimal(risk).setScale(7, BigDecimal.ROUND_HALF_UP).doubleValue();
+			formattedRisk = formattedRisk * 100;
+			
+			if(risk <= 0.001)
+			{
+				XYChart.Data<Number,Number> dataTemp = new XYChart.Data<Number, Number>(risk, income);
+				series1.getData().add(dataTemp);
+				intTemp++;
+				filteredDecisionList.add(decision);
+			}
+		}
+
+		lineChart.getData().add(series1);
+
+		for(int i=0;i<intTemp;i++)
+		{
+			nodeList.add(lineChart.getData().get(0).getData().get(i).getNode());
+		}
+		
+		setOnMouseEventsOnSeries(nodeList,filteredDecisionList);
+		
+		calculatingInfo.setVisible(false);
+		calculateButton.setDisable(false);	
+	}
+
+	private void setOnMouseEventsOnSeries(List<Node> nodeList, List<Decision> filteredDecisionList)
+	{
+		for(int i=0;i<nodeList.size();i++){
+			final int temp = i;
+		 nodeList.get(i).setOnMouseClicked(new EventHandler<MouseEvent>() {
+			 
+	            @Override
+	            public void handle(MouseEvent t) {
+	               
+	            	fillTextFields(filteredDecisionList.get(temp));
+	            	
+	            	
+	            }
+	        });
+		}
+		
+	}
+	
 }

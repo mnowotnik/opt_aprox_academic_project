@@ -1,5 +1,7 @@
 package wdec;
 
+import java.util.List;
+
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import opt.Constraints;
@@ -11,7 +13,7 @@ public class CalculatingThread
 	int debt, period, cash;
 	Thread thread;
 	CalcInterface listener;
-	Decision decision;
+	List<Decision> decisions;
 	Thread glowThread;
 
 	public CalculatingThread(int debt, int period, int cash, CalcInterface listener)
@@ -26,7 +28,7 @@ public class CalculatingThread
 	        	 
 	        	Solver solver = new Solver();
 	     		Constraints constraints = new Constraints(debt, period, cash);
-	     		decision = solver.solveBestInc(constraints);
+	     		decisions = solver.solve(constraints);
 	     		fireAfterCalc();
 	             return null;
 	         }
@@ -56,7 +58,7 @@ public class CalculatingThread
 			@Override
 			public void run()
 			{
-				listener.fillTextFields(decision); 
+				listener.addDecisions(decisions); 
 				
 			}
 		});

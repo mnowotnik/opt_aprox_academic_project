@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.shape.*?>
@@ -11,7 +12,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wdec.GuiController">
    <children>
-      <Pane prefHeight="590.0" prefWidth="607.0">
+      <Pane prefHeight="590.0" prefWidth="1220.0">
          <children>
             <Pane layoutX="14.0" layoutY="27.0" prefHeight="205.0" prefWidth="253.0" style="-fx-border-width: 3; -fx-border-color: CCCCCC; -fx-border-radius: 2;">
                <children>
@@ -54,7 +55,7 @@
                   <TextField fx:id="instalmentTextField" alignment="CENTER_RIGHT" editable="false" layoutX="184.0" layoutY="295.0" prefHeight="31.0" prefWidth="117.0" />
                </children>
             </Pane>
-            <Line endX="510.0" layoutX="100.0" layoutY="360.0" startX="-100.0" />
+            <Line endX="490.0" layoutX="100.0" layoutY="360.0" startX="-100.0" />
             <Pane layoutY="360.0" prefHeight="235.0" prefWidth="607.0">
                <children>
                   <Text layoutX="248.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Parametry">
@@ -78,13 +79,22 @@
                   <Text layoutX="317.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zysk Netto" />
                </children>
             </Pane>
-            <Line endX="510.0" layoutX="100.0" layoutY="535.0" startX="-100.0" stroke="#8d8d8d" />
+            <Line endX="490.0" layoutX="100.0" layoutY="535.0" startX="-100.0" stroke="#8d8d8d" />
             <Pane fx:id="calculatingInfo" layoutX="41.0" layoutY="261.0" prefHeight="72.0" prefWidth="200.0" visible="false">
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ff8f83" height="38.0" layoutX="29.0" layoutY="17.0" stroke="BLACK" strokeType="INSIDE" width="142.0" />
                   <Text layoutX="44.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Trwa obliczanie..." />
                </children>
             </Pane>
+            <Line endY="590.0" layoutX="590.0" />
+            <LineChart fx:id="lineChart" layoutX="599.0" layoutY="68.0" prefHeight="456.0" prefWidth="572.0">
+              <xAxis>
+                <NumberAxis label="Ryzyko" side="BOTTOM" upperBound="1.0E-4" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis label="Zysk" prefHeight="374.0" prefWidth="115.0" side="LEFT" upperBound="4000000.0" />
+              </yAxis>
+            </LineChart>
          </children>
       </Pane>
    </children>
