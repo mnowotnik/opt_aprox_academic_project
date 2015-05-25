@@ -10,17 +10,18 @@ public class CalculatingThread
 {
 	int debt, period, cash;
 	Thread thread;
-	AfterCalcInterface listener;
+	CalcInterface listener;
 	Decision decision;
+	Thread glowThread;
 
-	public CalculatingThread(int debt, int period, int cash, AfterCalcInterface listener)
+	public CalculatingThread(int debt, int period, int cash, CalcInterface listener)
 	{
 		this.debt = debt;
 		this.period = period;
 		this.cash = cash;
 		this.listener = listener;
 				
-	     Task<Void> task = new Task<Void>() {
+	     Task<Void> calculations = new Task<Void>() {
 	         @Override protected Void call() throws Exception {
 	        	 
 	        	Solver solver = new Solver();
@@ -31,11 +32,26 @@ public class CalculatingThread
 	         }
 	     };
 	     
-	     new Thread(task).start();
+	     new Thread(calculations).start();
+	     
+	     Task<Void> glow = new Task<Void>() {
+	         @Override protected Void call() throws Exception {
+	        	 while(true)
+	        	 {
+	        		 calcGlow();
+	        		 Thread.sleep(20);
+	        	 }
+	         }
+	     };
+	     
+	     glowThread = new Thread(glow);
+	     glowThread.start();
+	     
 	}
 
 	private void fireAfterCalc()
 	{
+		glowThread.stop();
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run()
@@ -44,6 +60,17 @@ public class CalculatingThread
 				
 			}
 		});
-		
 	}	  
+	
+	private void calcGlow()
+	{
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run()
+			{
+				listener.calcGlow();
+			}
+		});
+	}
+	
 }

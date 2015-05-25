@@ -12,12 +12,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.Glow;
 import javafx.scene.layout.Pane;
 
-public class GuiController implements Initializable, AfterCalcInterface
+public class GuiController implements Initializable, CalcInterface
 {
 
-	AfterCalcInterface afterCalc = this;
+	CalcInterface afterCalc = this;
+	double glowLevel;
+	boolean glowUp;
 	
 	@FXML
 	private Button calculateButton;
@@ -95,6 +98,10 @@ public class GuiController implements Initializable, AfterCalcInterface
 				int period = Integer.parseInt(periodTextField.getText());
 				int cash = Integer.parseInt(cashTextField.getText());
 				
+				glowLevel = 0.0;
+				calculatingInfo.setEffect(new Glow(0.0));
+				glowUp = true;
+				
 				new CalculatingThread(debt, period, cash, afterCalc);
 			}
 
@@ -136,5 +143,24 @@ public class GuiController implements Initializable, AfterCalcInterface
 		
 		calculateButton.setDisable(false);
 		
+	}
+
+	@Override
+	public void calcGlow()
+	{
+		if(glowUp)
+		{
+			glowLevel = glowLevel + 0.01;
+			if(glowLevel >= 1.0)
+				{
+					glowUp = false;
+				}
+		}
+		else
+		{
+			glowLevel = glowLevel - 0.01;
+			if(glowLevel <= 0.0) glowUp = true;
+		}
+		calculatingInfo.setEffect(new Glow(glowLevel));
 	}
 }
