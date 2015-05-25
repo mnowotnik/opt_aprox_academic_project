@@ -30,7 +30,7 @@ public class InvestProblem extends AbstractProblem {
 	/**
 	 * ilość ograniczeń
 	 */
-	private final static int CONS_NUM = 4;
+	private final static int CONS_NUM = 3;
 
 	/**
 	 * maksymalny wolumen
@@ -208,14 +208,13 @@ public class InvestProblem extends AbstractProblem {
 			constraints[2] = 0;
 		}
 
-		// netIncome has to be positive
 		int report[] = new int[3];
 		int netIncome = netIncomeFunc(vars, report);
-		if (netIncome <= 0) {
-			constraints[3] = netIncome;
-		} else {
-			constraints[3] = 0;
-		}
+//		if (netIncome <= 0) {
+//			constraints[3] = netIncome;
+//		} else {
+//			constraints[3] = 0;
+//		}
 
 		solution.setAttribute("grossSalesIncome", report[0]);
 		solution.setAttribute("primeCosts", report[1]);
