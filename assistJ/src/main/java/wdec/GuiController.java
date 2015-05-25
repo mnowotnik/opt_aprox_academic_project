@@ -191,13 +191,15 @@ public class GuiController implements Initializable, CalcInterface
 			double formattedRisk = new BigDecimal(risk).setScale(7, BigDecimal.ROUND_HALF_UP).doubleValue();
 			formattedRisk = formattedRisk * 100;
 			
-			if(risk <= 0.001)
-			{
+			// Plan by³ ¿eby kasowaæ wyniki o wy¿szym ryzyku
+			// Narazie zostaje bo coœ g³upiego siê dzieje tam z magazynami
+			//if(risk <= 1.001)
+			//{
 				XYChart.Data<Number,Number> dataTemp = new XYChart.Data<Number, Number>(risk, income);
 				series1.getData().add(dataTemp);
 				intTemp++;
 				filteredDecisionList.add(decision);
-			}
+			//}
 		}
 
 		lineChart.getData().add(series1);
