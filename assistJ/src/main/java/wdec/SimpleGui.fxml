@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40">
+   <children>
+      <Pane prefHeight="369.0" prefWidth="607.0">
+         <children>
+            <Pane layoutX="14.0" layoutY="27.0" prefHeight="162.0" prefWidth="234.0" style="-fx-border-width: 3; -fx-border-color: CCCCCC; -fx-border-radius: 2;">
+               <children>
+                  <Text layoutX="52.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dane wejściowe">
+                     <font>
+                        <Font name="Arial" size="18.0" />
+                     </font>
+                  </Text>
+                  <TextField fx:id="periodTextField" layoutX="87.0" layoutY="116.0" prefHeight="31.0" prefWidth="131.0" />
+                  <Text layoutX="15.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gotówka" />
+                  <Text layoutX="14.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nr. Etapu" />
+                  <Text layoutX="14.0" layoutY="101.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kredyt" wrappingWidth="47.6708984375" />
+                  <TextField fx:id="debtTextField" layoutX="87.0" layoutY="80.0" prefHeight="31.0" prefWidth="131.0" />
+                  <TextField fx:id="cashTextField" layoutX="87.0" layoutY="44.0" prefHeight="31.0" prefWidth="131.0" />
+               </children>
+            </Pane>
+            <Pane layoutX="273.0" layoutY="27.0" prefHeight="336.0" prefWidth="315.0">
+               <children>
+                  <Text layoutX="126.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Decyzje">
+                     <font>
+                        <Font name="Arial" size="18.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="25.0" layoutY="71.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Wolumen" />
+                  <Text layoutX="25.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Jakość" />
+                  <Text layoutX="25.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reklama telewizja" />
+                  <Text layoutX="25.0" layoutY="172.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reklama internet" />
+                  <Text layoutX="25.0" layoutY="206.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reklama magazyny" />
+                  <Text layoutX="25.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cena sprzedaży" />
+                  <Text layoutX="25.0" layoutY="274.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zaciągany kredyt" />
+                  <Text layoutX="25.0" layoutY="308.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Spłacana rata" />
+                  <TextField fx:id="volumeTextField" editable="false" layoutX="184.0" layoutY="50.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="qualityTextField" editable="false" layoutX="184.0" layoutY="84.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="tvTextField" editable="false" layoutX="184.0" layoutY="118.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="internetTextField" editable="false" layoutX="184.0" layoutY="151.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="magazinesTextField" editable="false" layoutX="184.0" layoutY="185.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="priceTextField" editable="false" layoutX="184.0" layoutY="219.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="loanTextField" editable="false" layoutX="184.0" layoutY="253.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="instalmentTextField" editable="false" layoutX="184.0" layoutY="287.0" prefHeight="31.0" prefWidth="117.0" />
+               </children>
+            </Pane>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>
