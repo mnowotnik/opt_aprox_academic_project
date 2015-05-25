@@ -25,7 +25,7 @@ public class CalculatingThread
 	        	 
 	        	Solver solver = new Solver();
 	     		Constraints constraints = new Constraints(debt, period, cash);
-	     		decision = solver.solve(constraints);
+	     		decision = solver.solveBestInc(constraints);
 	     		fireAfterCalc();
 	             return null;
 	         }

@@ -1,5 +1,8 @@
 package opt;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.encog.ml.data.versatile.NormalizationHelper;
 import org.encog.neural.networks.BasicNetwork;
 import org.moeaframework.Executor;
@@ -26,7 +29,7 @@ public class Solver {
 		int period = Integer.parseInt(args[1]);
 		int cash = Integer.parseInt(args[2]);
 		Constraints constraints = new Constraints(debt, period, cash);
-		Decision decision = solver.solve(constraints);
+		Decision decision = solver.solveBestInc(constraints);
 		System.out.println("Decision");
 		System.out.println("- volume:" + decision.inputArgs.volume);
 		System.out.println("- quality:" + decision.inputArgs.quality);
@@ -55,30 +58,42 @@ public class Solver {
 
 	}
 
+	/**
+	 * @param upriceFun sieć neuronowa - funkcja kosztu jednostkowego
+	 * @param percSoldFun sieć neuronowa - funkcja procentu sprzedanego wolumenu
+	 */
 	public Solver(UnitPriceFun upriceFun, PercSoldFun percSoldFun) {
 		this.upriceFun = upriceFun;
 		this.percSoldFun = percSoldFun;
 	}
 
 	public Solver() {
+		//do deserializacji obiektów (sieci neuronowych)
 		ObjLoader ol = new ObjLoader();
 
+		// wczytywanie sieci, która aproksymuje procent sprzedanego wolumenu
 		BasicNetwork percSoldNN = ol.loadPercSoldNN();
+		// wczytywanie klasy do normalizacji danych wejściowych
 		NormalizationHelper percSoldNormHelper = ol.loadNormHelperPercSold();
+		// tworzenie obiektu - wrappera wokół sieci
 		PercSoldFun percSoldFun = new PercSoldFun(percSoldNormHelper,
 				percSoldNN);
 
+		// wczytywanie sieci, która aproksymuje funkcję kosztu jednostkowego
 		BasicNetwork upriceNN = ol.loadUPriceNN();
+		// wczytywanie klasy do normalizacji danych wejściowych
 		NormalizationHelper upriceNormHelper = ol.loadNormHelperUprice();
+		// tworzenie obiektu - wrappera , wokół sieci
 		UnitPriceFun upriceFun = new UnitPriceFun(upriceNormHelper, upriceNN);
 		this.upriceFun = upriceFun;
 		this.percSoldFun = percSoldFun;
 	}
 
-	public Decision solve(Constraints constraints) {
+	public List<Decision> solve(Constraints constraints) {
 		System.out.println("Solving...");
 		Object[] args = new Object[] { upriceFun, percSoldFun, constraints };
 
+		// uruchamianie biblioteki MOAE i otrzymywanie niezdominowaje populacji
 		NondominatedPopulation res = new Executor()
 				.withProblemClass(InvestProblem.class, args)
 				.withAlgorithm(ALGORITHM).withMaxEvaluations(MAX_EVALS)
@@ -86,52 +101,58 @@ public class Solver {
 				// .withProperty("pm.rate", "0.3")
 				.distributeOnAllCores().run();
 
-		double netInc = 0;
-		int dec = 0;
-		for (int i = 0; i < res.size(); i++) {
-			if (res.get(i).getObjective(0) > netInc) {
-				dec = i;
-				netInc = res.get(i).getObjective(0);
-			}
+		//tworzenie listy decyzji z otrzymanej niezdominowaje populacji rozwiązań
+		List<Decision> decisions = new ArrayList<>();
+		for (Solution solution : res) {
+
+			int[] vars = EncodingUtils.getInt(solution);
+			int volume = vars[0];
+			int quality = vars[1];
+			int tv = vars[2] * AD_MULTI;
+			int internet = vars[3] * AD_MULTI;
+			int warehouse = vars[4] * AD_MULTI;
+			int price = vars[5];
+			int loan = (int) ((double) vars[6] / 100 * (MAX_DEBT - constraints.debt));
+			int instalment = vars[7]
+					+ InvestProblem.calcMinInstalment(constraints.period, loan
+							+ constraints.debt);
+			InputArgs iArgs = new InputArgs(volume, quality, price, loan,
+					instalment, new Advertisments(tv, internet, warehouse));
+			Objectives objectives = new Objectives(-1
+					* solution.getObjective(0), 1 - solution.getObjective(1));
+
+			int grossSalesIncome = (int) solution
+					.getAttribute("grossSalesIncome");
+			int primeCosts = (int) solution.getAttribute("primeCosts");
+			int salesIncome = (int) solution.getAttribute("salesIncome");
+			Report report = new Report(grossSalesIncome, primeCosts,
+					salesIncome);
+
+			double unitPrice = (double) solution.getAttribute("unitPrice");
+			Parameters parameters = new Parameters(unitPrice);
+			Decision decision = new Decision(iArgs, objectives, report,
+					parameters);
+			decisions.add(decision);
+
 		}
-		Solution solution = res.get(dec);
-		// System.out.println("gross:" + solution.getAttribute("gross"));
-		// System.out.println("prod:" + solution.getAttribute("prod"));
-		// System.out.println("bank:" + solution.getAttribute("bank"));
-		// System.out.println("resell:" + solution.getAttribute("resell"));
-		// System.out.println("totalcost:" +
-		// solution.getAttribute("totalcost"));
-		// System.out.println("unitprice:" +
-		// solution.getAttribute("unitPrice"));
-		int[] vars = EncodingUtils.getInt(solution);
-		int volume = vars[0];
-		int quality = vars[1];
-		int tv = vars[2] * AD_MULTI;
-		int internet = vars[3] * AD_MULTI;
-		int warehouse = vars[4] * AD_MULTI;
-		int price = vars[5];
-		int loan = (int) ((double) vars[6] / 100 * (MAX_DEBT - constraints.debt));
-		int instalment = vars[7]
-				+ InvestProblem.calcMinInstalment(constraints.period, loan
-						+ constraints.debt);
-		InputArgs iArgs = new InputArgs(volume, quality, price, loan,
-				instalment, new Advertisments(tv, internet, warehouse));
-		Objectives objectives = new Objectives(-1 * solution.getObjective(0),
-				1 - solution.getObjective(1));
-
-		int grossSalesIncome = (int) solution.getAttribute("grossSalesIncome");
-		int primeCosts = (int) solution.getAttribute("primeCosts");
-		int salesIncome = (int) solution.getAttribute("salesIncome");
-		Report report = new Report(grossSalesIncome, primeCosts, salesIncome);
-
-		double unitPrice = (double) solution.getAttribute("unitPrice");
-		Parameters parameters = new Parameters(unitPrice);
-		Decision decision = new Decision(iArgs, objectives, report, parameters);
-
-		return decision;
+		return decisions;
 
 	}
 
+	public Decision solveBestInc(Constraints constraints) {
+		List<Decision> decisions = solve(constraints);
+
+		Decision bestDec = null;
+		for (Decision decision : decisions) {
+			if (bestDec == null
+					|| decision.objectives.netIncome > bestDec.objectives.netIncome) {
+				bestDec = decision;
+			}
+		}
+		return bestDec;
+	}
+
+	// symulator na WDEC nalicza ratę dwa razy i podaje niepoprawny zysk
 	public static double convertToWdecIncome(double netInc, double inst) {
 		netInc /= (1 - 0.19);
 		netInc -= inst;

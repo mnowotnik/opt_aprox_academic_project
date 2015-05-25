@@ -177,13 +177,13 @@ public class InvestProblem extends AbstractProblem {
 		return (int) Math.ceil(minInstalment);
 	}
 
-	private int netIncomeFunc(int[] vars, int[] report) {
+	public int netIncomeFunc(int[] vars, int[] report) {
 		int totalExpenses = futureExpensesFunc(vars);
 		int vol = vars[0];
 		int qual = vars[1];
-		int tv = AD_MULTI * vars[2];
-		int internet = AD_MULTI * vars[3];
-		int warehouse = AD_MULTI * vars[4];
+		int tv = vars[2];
+		int internet = vars[3];
+		int warehouse = vars[4];
 		int price = vars[5];
 		int loan = vars[6];
 		int inst = vars[7];
