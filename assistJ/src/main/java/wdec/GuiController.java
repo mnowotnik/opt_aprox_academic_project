@@ -195,7 +195,7 @@ public class GuiController implements Initializable, CalcInterface
 			// Narazie zostaje bo coœ g³upiego siê dzieje tam z magazynami
 			//if(risk <= 1.001)
 			//{
-				XYChart.Data<Number,Number> dataTemp = new XYChart.Data<Number, Number>(risk, income);
+				XYChart.Data<Number,Number> dataTemp = new XYChart.Data<Number, Number>(formattedRisk, income);
 				series1.getData().add(dataTemp);
 				intTemp++;
 				filteredDecisionList.add(decision);
