@@ -1,6 +1,8 @@
 package wdec;
 
+import java.math.BigDecimal;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 import opt.Constraints;
@@ -51,6 +53,27 @@ public class GuiController implements Initializable
 
 	@FXML
 	private TextField instalmentTextField;
+	
+	@FXML
+	private TextField unitPriceTextField;
+	
+	@FXML
+	private TextField grossSalesIncomeTextField;
+	
+	@FXML
+	private TextField primeCostsTextField;
+	
+	@FXML
+	private TextField salesIncomeTextField;
+	
+	@FXML
+	private TextField realNetIncomeTextField;
+	
+	@FXML
+	private TextField wdecNetIncomeTextField;
+	
+	@FXML
+	private TextField riskTextField;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1)
@@ -69,16 +92,6 @@ public class GuiController implements Initializable
 
 				Decision decision = solver.solve(constraints);
 				
-				System.out.println("Decision");
-				System.out.println("- volume:" + decision.inputArgs.volume);
-				System.out.println("- quality:" + decision.inputArgs.quality);
-				System.out.println("- tv:" + decision.inputArgs.ads.tv);
-				System.out.println("- internet:" + decision.inputArgs.ads.internet);
-				System.out.println("- warehouse:" + decision.inputArgs.ads.warehouse);
-				System.out.println("- price:" + decision.inputArgs.price);
-				System.out.println("- loan:" + decision.inputArgs.loan);
-				System.out.println("- instalment:" + decision.inputArgs.instalment);
-				
 				volumeTextField.setText(Integer.toString(decision.inputArgs.volume));
 				qualityTextField.setText(Integer.toString(decision.inputArgs.quality));
 				tvTextField.setText(Double.toString(decision.inputArgs.ads.tv));
@@ -87,6 +100,24 @@ public class GuiController implements Initializable
 				priceTextField.setText(Integer.toString(decision.inputArgs.price));
 				loanTextField.setText(Integer.toString(decision.inputArgs.loan));
 				instalmentTextField.setText(Integer.toString(decision.inputArgs.instalment));
+				
+				double formattedUnitPrice = new BigDecimal(decision.parameters.unitPrice ).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+				unitPriceTextField.setText(Double.toString(formattedUnitPrice));
+				grossSalesIncomeTextField.setText(Double.toString(decision.report.grossSalesIncome));
+				primeCostsTextField.setText(Double.toString(decision.report.primeCosts));
+				salesIncomeTextField.setText(Double.toString(decision.report.salesIncome));
+
+				double risk = 1.0 - decision.objectives.percSold;
+				double formattedRisk = new BigDecimal(risk).setScale(5, BigDecimal.ROUND_HALF_UP).doubleValue();
+				formattedRisk = formattedRisk * 100;
+				
+				realNetIncomeTextField.setText(Double.toString(decision.objectives.netIncome));
+				
+				double wdecIncome = Solver.convertToWdecIncome(decision.objectives.netIncome,
+						decision.inputArgs.instalment);
+				wdecNetIncomeTextField.setText(Double.toString(Math.round(wdecIncome)));
+
+				riskTextField.setText(Double.toString(formattedRisk)+'%');
 			}
 
 		});

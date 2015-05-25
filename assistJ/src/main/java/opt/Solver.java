@@ -132,7 +132,7 @@ public class Solver {
 
 	}
 
-	private static double convertToWdecIncome(double netInc, double inst) {
+	public static double convertToWdecIncome(double netInc, double inst) {
 		netInc /= (1 - 0.19);
 		netInc -= inst;
 		if (netInc < 0) {

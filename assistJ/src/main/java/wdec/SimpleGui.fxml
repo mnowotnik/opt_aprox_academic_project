@@ -11,21 +11,21 @@
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40" fx:controller="wdec.GuiController">
    <children>
-      <Pane prefHeight="369.0" prefWidth="607.0">
+      <Pane prefHeight="590.0" prefWidth="607.0">
          <children>
-            <Pane layoutX="14.0" layoutY="27.0" prefHeight="205.0" prefWidth="234.0" style="-fx-border-width: 3; -fx-border-color: CCCCCC; -fx-border-radius: 2;">
+            <Pane layoutX="14.0" layoutY="27.0" prefHeight="205.0" prefWidth="253.0" style="-fx-border-width: 3; -fx-border-color: CCCCCC; -fx-border-radius: 2;">
                <children>
                   <Text layoutX="52.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dane wejściowe">
                      <font>
                         <Font name="Arial" size="18.0" />
                      </font>
                   </Text>
-                  <TextField fx:id="periodTextField" layoutX="87.0" layoutY="116.0" prefHeight="31.0" prefWidth="131.0" />
                   <Text layoutX="15.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gotówka" />
-                  <Text layoutX="14.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nr. Etapu" />
-                  <Text layoutX="14.0" layoutY="101.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kredyt" wrappingWidth="47.6708984375" />
-                  <TextField fx:id="debtTextField" layoutX="87.0" layoutY="80.0" prefHeight="31.0" prefWidth="131.0" />
-                  <TextField fx:id="cashTextField" layoutX="87.0" layoutY="44.0" prefHeight="31.0" prefWidth="131.0" />
+                  <Text layoutX="15.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nr. Etapu" />
+                  <Text layoutX="15.0" layoutY="101.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zadłużenie" wrappingWidth="73.6708984375" />
+                  <TextField fx:id="cashTextField" layoutX="108.0" layoutY="43.0" prefHeight="31.0" prefWidth="131.0" />
+                  <TextField fx:id="debtTextField" layoutX="108.0" layoutY="79.0" prefHeight="31.0" prefWidth="131.0" />
+                  <TextField fx:id="periodTextField" layoutX="108.0" layoutY="116.0" prefHeight="31.0" prefWidth="131.0" />
                   <Button fx:id="calculateButton" layoutX="85.0" layoutY="160.0" mnemonicParsing="false" text="Oblicz" />
                </children>
             </Pane>
@@ -54,6 +54,31 @@
                   <TextField fx:id="instalmentTextField" editable="false" layoutX="184.0" layoutY="287.0" prefHeight="31.0" prefWidth="117.0" />
                </children>
             </Pane>
+            <Line endX="510.0" layoutX="100.0" layoutY="360.0" startX="-100.0" />
+            <Pane layoutY="360.0" prefHeight="235.0" prefWidth="607.0">
+               <children>
+                  <Text layoutX="248.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Parametry">
+                     <font>
+                        <Font name="Arial" size="18.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="14.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cena Jednostkowa" />
+                  <TextField fx:id="unitPriceTextField" layoutX="148.0" layoutY="46.0" prefHeight="31.0" prefWidth="117.0" />
+                  <Text layoutX="14.0" layoutY="108.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zysk Brutto" />
+                  <TextField fx:id="grossSalesIncomeTextField" layoutX="148.0" layoutY="87.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="primeCostsTextField" layoutX="148.0" layoutY="130.0" prefHeight="31.0" prefWidth="117.0" />
+                  <Text layoutX="14.0" layoutY="151.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Koszty Własne" />
+                  <Text layoutX="317.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" text="realNetIncome" />
+                  <TextField fx:id="salesIncomeTextField" layoutX="456.0" layoutY="46.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="realNetIncomeTextField" layoutX="456.0" layoutY="86.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="wdecNetIncomeTextField" layoutX="456.0" layoutY="130.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="riskTextField" layoutX="317.0" layoutY="180.0" prefHeight="31.0" prefWidth="117.0" />
+                  <Text layoutX="317.0" layoutY="151.0" strokeType="OUTSIDE" strokeWidth="0.0" text="wdecNetIncome" />
+                  <Text layoutX="174.0" layoutY="201.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ryzyko" />
+                  <Text layoutX="317.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zysk Netto" />
+               </children>
+            </Pane>
+            <Line endX="510.0" layoutX="100.0" layoutY="530.0" startX="-100.0" stroke="#8d8d8d" />
          </children>
       </Pane>
    </children>
