@@ -8,8 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40" fx:controller="wdec.GuiController">
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wdec.GuiController">
    <children>
       <Pane prefHeight="590.0" prefWidth="607.0">
          <children>
@@ -23,35 +22,35 @@
                   <Text layoutX="15.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gotówka" />
                   <Text layoutX="15.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nr. Etapu" />
                   <Text layoutX="15.0" layoutY="101.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zadłużenie" wrappingWidth="73.6708984375" />
-                  <TextField fx:id="cashTextField" layoutX="108.0" layoutY="43.0" prefHeight="31.0" prefWidth="131.0" />
-                  <TextField fx:id="debtTextField" layoutX="108.0" layoutY="79.0" prefHeight="31.0" prefWidth="131.0" />
-                  <TextField fx:id="periodTextField" layoutX="108.0" layoutY="116.0" prefHeight="31.0" prefWidth="131.0" />
+                  <TextField fx:id="cashTextField" alignment="CENTER_RIGHT" layoutX="108.0" layoutY="43.0" prefHeight="31.0" prefWidth="131.0" />
+                  <TextField fx:id="debtTextField" alignment="CENTER_RIGHT" layoutX="108.0" layoutY="79.0" prefHeight="31.0" prefWidth="131.0" />
+                  <TextField fx:id="periodTextField" alignment="CENTER_RIGHT" layoutX="108.0" layoutY="116.0" prefHeight="31.0" prefWidth="131.0" />
                   <Button fx:id="calculateButton" layoutX="85.0" layoutY="160.0" mnemonicParsing="false" text="Oblicz" />
                </children>
             </Pane>
             <Pane layoutX="273.0" layoutY="27.0" prefHeight="336.0" prefWidth="315.0">
                <children>
-                  <Text layoutX="126.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Decyzje">
+                  <Text layoutX="126.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Decyzje">
                      <font>
                         <Font name="Arial" size="18.0" />
                      </font>
                   </Text>
-                  <Text layoutX="25.0" layoutY="71.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Wolumen" />
-                  <Text layoutX="25.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Jakość" />
-                  <Text layoutX="25.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reklama telewizja" />
+                  <Text layoutX="25.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Wolumen" />
+                  <Text layoutX="25.0" layoutY="100.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Jakość" />
+                  <Text layoutX="25.0" layoutY="136.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reklama telewizja" />
                   <Text layoutX="25.0" layoutY="172.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reklama internet" />
-                  <Text layoutX="25.0" layoutY="206.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reklama magazyny" />
-                  <Text layoutX="25.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cena sprzedaży" />
-                  <Text layoutX="25.0" layoutY="274.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zaciągany kredyt" />
-                  <Text layoutX="25.0" layoutY="308.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Spłacana rata" />
-                  <TextField fx:id="volumeTextField" editable="false" layoutX="184.0" layoutY="50.0" prefHeight="31.0" prefWidth="117.0" />
-                  <TextField fx:id="qualityTextField" editable="false" layoutX="184.0" layoutY="84.0" prefHeight="31.0" prefWidth="117.0" />
-                  <TextField fx:id="tvTextField" editable="false" layoutX="184.0" layoutY="118.0" prefHeight="31.0" prefWidth="117.0" />
-                  <TextField fx:id="internetTextField" editable="false" layoutX="184.0" layoutY="151.0" prefHeight="31.0" prefWidth="117.0" />
-                  <TextField fx:id="magazinesTextField" editable="false" layoutX="184.0" layoutY="185.0" prefHeight="31.0" prefWidth="117.0" />
-                  <TextField fx:id="priceTextField" editable="false" layoutX="184.0" layoutY="219.0" prefHeight="31.0" prefWidth="117.0" />
-                  <TextField fx:id="loanTextField" editable="false" layoutX="184.0" layoutY="253.0" prefHeight="31.0" prefWidth="117.0" />
-                  <TextField fx:id="instalmentTextField" editable="false" layoutX="184.0" layoutY="287.0" prefHeight="31.0" prefWidth="117.0" />
+                  <Text layoutX="25.0" layoutY="208.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reklama magazyny" />
+                  <Text layoutX="25.0" layoutY="244.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cena sprzedaży" />
+                  <Text layoutX="25.0" layoutY="280.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zaciągany kredyt" />
+                  <Text layoutX="25.0" layoutY="316.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Spłacana rata" />
+                  <TextField fx:id="volumeTextField" alignment="CENTER_RIGHT" editable="false" layoutX="184.0" layoutY="43.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="qualityTextField" alignment="CENTER_RIGHT" editable="false" layoutX="184.0" layoutY="79.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="tvTextField" alignment="CENTER_RIGHT" editable="false" layoutX="184.0" layoutY="115.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="internetTextField" alignment="CENTER_RIGHT" editable="false" layoutX="184.0" layoutY="151.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="magazinesTextField" alignment="CENTER_RIGHT" editable="false" layoutX="184.0" layoutY="187.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="priceTextField" alignment="CENTER_RIGHT" editable="false" layoutX="184.0" layoutY="223.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="loanTextField" alignment="CENTER_RIGHT" editable="false" layoutX="184.0" layoutY="259.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="instalmentTextField" alignment="CENTER_RIGHT" editable="false" layoutX="184.0" layoutY="295.0" prefHeight="31.0" prefWidth="117.0" />
                </children>
             </Pane>
             <Line endX="510.0" layoutX="100.0" layoutY="360.0" startX="-100.0" />
@@ -63,22 +62,28 @@
                      </font>
                   </Text>
                   <Text layoutX="14.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cena Jednostkowa" />
-                  <TextField fx:id="unitPriceTextField" layoutX="148.0" layoutY="46.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="unitPriceTextField" alignment="CENTER_RIGHT" editable="false" layoutX="148.0" layoutY="46.0" prefHeight="31.0" prefWidth="117.0" />
                   <Text layoutX="14.0" layoutY="108.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zysk Brutto" />
-                  <TextField fx:id="grossSalesIncomeTextField" layoutX="148.0" layoutY="87.0" prefHeight="31.0" prefWidth="117.0" />
-                  <TextField fx:id="primeCostsTextField" layoutX="148.0" layoutY="130.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="grossSalesIncomeTextField" alignment="CENTER_RIGHT" editable="false" layoutX="148.0" layoutY="87.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="primeCostsTextField" alignment="CENTER_RIGHT" editable="false" layoutX="148.0" layoutY="130.0" prefHeight="31.0" prefWidth="117.0" />
                   <Text layoutX="14.0" layoutY="151.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Koszty Własne" />
                   <Text layoutX="317.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" text="realNetIncome" />
-                  <TextField fx:id="salesIncomeTextField" layoutX="456.0" layoutY="46.0" prefHeight="31.0" prefWidth="117.0" />
-                  <TextField fx:id="realNetIncomeTextField" layoutX="456.0" layoutY="86.0" prefHeight="31.0" prefWidth="117.0" />
-                  <TextField fx:id="wdecNetIncomeTextField" layoutX="456.0" layoutY="130.0" prefHeight="31.0" prefWidth="117.0" />
-                  <TextField fx:id="riskTextField" layoutX="317.0" layoutY="186.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="salesIncomeTextField" alignment="CENTER_RIGHT" editable="false" layoutX="456.0" layoutY="46.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="realNetIncomeTextField" alignment="CENTER_RIGHT" editable="false" layoutX="456.0" layoutY="86.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="wdecNetIncomeTextField" alignment="CENTER_RIGHT" editable="false" layoutX="456.0" layoutY="130.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="riskTextField" alignment="CENTER_RIGHT" editable="false" layoutX="317.0" layoutY="186.0" prefHeight="31.0" prefWidth="117.0" />
                   <Text layoutX="317.0" layoutY="151.0" strokeType="OUTSIDE" strokeWidth="0.0" text="wdecNetIncome" />
                   <Text layoutX="174.0" layoutY="207.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ryzyko" />
                   <Text layoutX="317.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zysk Netto" />
                </children>
             </Pane>
             <Line endX="510.0" layoutX="100.0" layoutY="535.0" startX="-100.0" stroke="#8d8d8d" />
+            <Pane fx:id="calculatingInfo" layoutX="41.0" layoutY="261.0" prefHeight="72.0" prefWidth="200.0" visible="false">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ff8f83" height="38.0" layoutX="29.0" layoutY="17.0" stroke="BLACK" strokeType="INSIDE" width="142.0" />
+                  <Text layoutX="44.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Trwa obliczanie..." />
+               </children>
+            </Pane>
          </children>
       </Pane>
    </children>
