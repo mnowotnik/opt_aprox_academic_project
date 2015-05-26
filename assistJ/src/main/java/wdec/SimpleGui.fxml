@@ -89,7 +89,7 @@
             <Line endY="590.0" layoutX="590.0" />
             <LineChart fx:id="lineChart" layoutX="599.0" layoutY="68.0" prefHeight="456.0" prefWidth="572.0">
               <xAxis>
-                <NumberAxis label="Ryzyko" side="BOTTOM" upperBound="1.0E-4" />
+                <NumberAxis label="Ryzyko" side="BOTTOM" upperBound="0.001" />
               </xAxis>
               <yAxis>
                 <NumberAxis label="Zysk" prefHeight="374.0" prefWidth="115.0" side="LEFT" upperBound="4000000.0" />

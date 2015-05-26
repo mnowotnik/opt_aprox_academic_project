@@ -9,6 +9,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -17,6 +18,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.util.StringConverter;
 import opt.Decision;
 import opt.Solver;
 
@@ -93,6 +95,23 @@ public class GuiController implements CalcInterface {
 	@FXML
 	public void initialize() {
 		lineChart.setLegendVisible(false);
+		NumberAxis xAxis = (NumberAxis) lineChart.getXAxis();
+		StringConverter<Number> stringFormatter = new StringConverter<Number>() {
+
+		     @Override 
+		     public String toString(Number number) {
+				return (new Double(number.doubleValue()*100)).toString() + '%';
+		     }
+
+			@Override
+			public Number fromString(String arg0)
+			{
+				// We don't need this, do we?
+				return null;
+			}
+		 };
+		
+		xAxis.setTickLabelFormatter(stringFormatter);
 
 		debtTextField.setOnKeyPressed(null);
 
@@ -215,24 +234,20 @@ public class GuiController implements CalcInterface {
 		for (Decision decision : decisions) {
 			double income = decision.report.salesIncome;
 			double risk = 1.0 - decision.objectives.percSold;
-			double formattedRisk = new BigDecimal(risk).setScale(7,
-					BigDecimal.ROUND_HALF_UP).doubleValue();
-			formattedRisk = formattedRisk * 100;
+			//double formattedRisk = new BigDecimal(risk).setScale(7, BigDecimal.ROUND_HALF_UP).doubleValue();
+			//formattedRisk = formattedRisk * 100;
 
 			// if(risk<0.001){
 			// continue;
 			// }
 
-			// Plan by� �eby kasowa� wyniki o wy�szym ryzyku
-			// Narazie zostaje bo co� g�upiego si� dzieje tam z magazynami
-			// if(risk <= 1.001)
-			// {
-			XYChart.Data<Number, Number> dataTemp = new XYChart.Data<Number, Number>(
-					formattedRisk, income);
-			series1.getData().add(dataTemp);
-			intTemp++;
-			filteredDecisionList.add(decision);
-			// }
+			if(risk <= 0.001)
+			{
+				XYChart.Data<Number, Number> dataTemp = new XYChart.Data<Number, Number>(risk, income);
+				series1.getData().add(dataTemp);
+				intTemp++;
+				filteredDecisionList.add(decision);
+			}
 		}
 
 		lineChart.getData().add(series1);
