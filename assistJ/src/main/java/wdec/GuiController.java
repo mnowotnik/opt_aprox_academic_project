@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -95,9 +96,6 @@ public class GuiController implements CalcInterface {
 	@FXML
 	private NumberAxis xAxis, yAxis;
 	
-	@FXML
-	private Button fixWorldProblemsButton;
-	
 	private List<Number> fixList = new ArrayList<Number>();
 
 	@FXML
@@ -146,19 +144,6 @@ public class GuiController implements CalcInterface {
 		};
 
 		calculateButton.setOnAction(execCalcEv);
-		
-		
-		EventHandler<ActionEvent> fixWorldProblems = new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-
-				yAxis.invalidateRange(fixList);
-			}
-
-		};
-		
-		fixWorldProblemsButton.setOnAction(fixWorldProblems);
 
 		TextField[] inputFields = new TextField[] { debtTextField,
 				periodTextField, cashTextField };
@@ -282,7 +267,17 @@ public class GuiController implements CalcInterface {
 
 		calculatingInfo.setVisible(false);
 		calculateButton.setDisable(false);
-	}
+		
+		Task<Void> fixScale = new Task<Void>() {
+			@Override
+			protected Void call() throws Exception {
+
+				Thread.sleep(1000);
+				yAxis.invalidateRange(fixList);
+				return null;
+			}};
+			new Thread(fixScale).start();
+		};
 
 	private void setOnMouseEventsOnSeries(List<Node> nodeList,
 			List<Decision> filteredDecisionList) {
