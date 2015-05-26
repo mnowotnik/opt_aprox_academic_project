@@ -12,7 +12,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wdec.GuiController">
    <children>
-      <Pane prefHeight="582.0" prefWidth="1196.0">
+      <Pane prefHeight="611.0" prefWidth="1196.0">
          <children>
             <Pane layoutX="14.0" layoutY="27.0" prefHeight="205.0" prefWidth="253.0" style="-fx-border-width: 3; -fx-border-color: CCCCCC; -fx-border-radius: 2;">
                <children>
@@ -110,7 +110,8 @@
             </LineChart>
             <ToggleButton fx:id="solverToggle" layoutX="633.0" layoutY="27.0" mnemonicParsing="false" selected="true" text="Wykres zysku" />
             <ToggleButton fx:id="unitPriceToggle" layoutX="765.0" layoutY="27.0" mnemonicParsing="false" text="Koszt jednostkowy" />
-            <Slider fx:id="unitPriceSlider" layoutX="694.0" layoutY="527.0" majorTickUnit="10.0" minorTickCount="0" prefHeight="17.0" prefWidth="428.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" visible="false" />
+            <Slider fx:id="unitPriceSlider" layoutX="694.0" layoutY="527.0" majorTickUnit="10.0" minorTickCount="0" prefHeight="17.0" prefWidth="428.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+            <Text fx:id="qualityText" layoutX="894.0" layoutY="592.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Jakość" visible="false" />
          </children>
       </Pane>
    </children>

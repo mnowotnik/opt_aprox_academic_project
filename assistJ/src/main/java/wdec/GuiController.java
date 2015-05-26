@@ -3,8 +3,6 @@ package wdec;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -12,7 +10,6 @@ import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.chart.XYChart.Data;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
@@ -43,7 +40,7 @@ public class GuiController implements CalcInterface {
 					  wdecNetIncomeTextField, riskTextField;
 
 	@FXML
-	private Text riskText;
+	private Text riskText, qualityText;
 
 	@FXML
 	private Pane calculatingInfo;
@@ -118,6 +115,7 @@ public class GuiController implements CalcInterface {
 				unitPriceSlider.setVisible(true);
 				unitPriceToggle.setSelected(true);
 				solverToggle.setSelected(false);
+				qualityText.setVisible(true);
 				}
 		};
 		
@@ -133,6 +131,7 @@ public class GuiController implements CalcInterface {
 				unitPriceSlider.setVisible(false);
 				unitPriceToggle.setSelected(false);
 				solverToggle.setSelected(true);
+				qualityText.setVisible(false);
 				}
 		};
 		
