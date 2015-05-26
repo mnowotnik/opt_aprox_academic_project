@@ -241,7 +241,7 @@ public class GuiController implements CalcInterface {
 		List<Node> nodeList = new ArrayList<Node>();
 		List<Decision> filteredDecisionList = new ArrayList<Decision>();
 		int intTemp = 0;
-//		fixList.clear();
+		fixList.clear();
 		
 		for (Decision decision : decisions) {
 			double income = decision.objectives.netIncome;
@@ -253,7 +253,7 @@ public class GuiController implements CalcInterface {
 				series1.getData().add(dataTemp);
 				intTemp++;
 				filteredDecisionList.add(decision);
-//				fixList.add(income);
+				fixList.add(income);
 //			}
 		}
 
