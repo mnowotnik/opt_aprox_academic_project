@@ -100,6 +100,7 @@ public class GuiController implements CalcInterface {
 	@FXML
 	private NumberAxis xAxis, yAxis;
 	
+	private List<Number> fixList = new ArrayList<Number>();
 
 	@FXML
 	public void initialize() {
@@ -240,7 +241,7 @@ public class GuiController implements CalcInterface {
 		List<Node> nodeList = new ArrayList<Node>();
 		List<Decision> filteredDecisionList = new ArrayList<Decision>();
 		int intTemp = 0;
-		List<Number> fixList = new ArrayList<Number>();
+		fixList.clear();
 		
 		for (Decision decision : decisions) {
 			double income = decision.objectives.netIncome;
@@ -257,6 +258,7 @@ public class GuiController implements CalcInterface {
 		}
 
 		lineChart.getData().add(series1);
+		yAxis.invalidateRange(fixList);
 
 		for (int i = 0; i < intTemp; i++) {
 			nodeList.add(lineChart.getData().get(0).getData().get(i).getNode());
@@ -267,15 +269,14 @@ public class GuiController implements CalcInterface {
 		calculatingInfo.setVisible(false);
 		calculateButton.setDisable(false);
 		
-		Task<Void> fixScale = new Task<Void>() {
-			@Override
-			protected Void call() throws Exception {
-
-				yAxis.invalidateRange(fixList);
-				Thread.sleep(1000);
-				return null;
-			}};
-			new Thread(fixScale).start();
+//		Task<Void> fixScale = new Task<Void>() {
+//			@Override
+//			protected Void call() throws Exception {
+//
+//				Thread.sleep(1000);
+//				return null;
+//			}};
+//			new Thread(fixScale).start();
 		};
 
 	private void setOnMouseEventsOnSeries(List<Node> nodeList,
