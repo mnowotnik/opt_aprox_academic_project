@@ -241,29 +241,24 @@ public class GuiController implements CalcInterface {
 		List<Node> nodeList = new ArrayList<Node>();
 		List<Decision> filteredDecisionList = new ArrayList<Decision>();
 		int intTemp = 0;
-		fixList.clear();
+//		fixList.clear();
 		
 		for (Decision decision : decisions) {
-			double income = decision.report.salesIncome;
+			double income = decision.objectives.netIncome;
 			double risk = 1.0 - decision.objectives.percSold;
-			//double formattedRisk = new BigDecimal(risk).setScale(7, BigDecimal.ROUND_HALF_UP).doubleValue();
-			//formattedRisk = formattedRisk * 100;
 
-			// if(risk<0.001){
-			// continue;
-			// }
-
-			if(risk <= 0.001)
-			{
+//			if(risk <= 0.001)
+//			{
 				XYChart.Data<Number, Number> dataTemp = new XYChart.Data<Number, Number>(risk, income);
 				series1.getData().add(dataTemp);
 				intTemp++;
 				filteredDecisionList.add(decision);
-				fixList.add(income);
-			}
+//				fixList.add(income);
+//			}
 		}
 
 		lineChart.getData().add(series1);
+		yAxis.invalidateRange(fixList);
 
 		for (int i = 0; i < intTemp; i++) {
 			nodeList.add(lineChart.getData().get(0).getData().get(i).getNode());
@@ -274,15 +269,14 @@ public class GuiController implements CalcInterface {
 		calculatingInfo.setVisible(false);
 		calculateButton.setDisable(false);
 		
-		Task<Void> fixScale = new Task<Void>() {
-			@Override
-			protected Void call() throws Exception {
-
-				Thread.sleep(1000);
-				yAxis.invalidateRange(fixList);
-				return null;
-			}};
-			new Thread(fixScale).start();
+//		Task<Void> fixScale = new Task<Void>() {
+//			@Override
+//			protected Void call() throws Exception {
+//
+//				Thread.sleep(1000);
+//				return null;
+//			}};
+//			new Thread(fixScale).start();
 		};
 
 	private void setOnMouseEventsOnSeries(List<Node> nodeList,
