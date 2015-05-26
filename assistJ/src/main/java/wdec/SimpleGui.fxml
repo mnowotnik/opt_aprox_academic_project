@@ -100,7 +100,7 @@
                 <NumberAxis fx:id="yAxis" label="Zysk" prefHeight="374.0" prefWidth="81.0" side="LEFT" upperBound="700000.0" />
               </yAxis>
             </LineChart>
-            <LineChart fx:id="unitPriceChart" createSymbols="false" layoutX="599.0" layoutY="68.0" legendVisible="false" prefHeight="456.0" prefWidth="572.0" visible="false">
+            <LineChart fx:id="unitPriceChart" animated="false" createSymbols="false" layoutX="599.0" layoutY="68.0" legendVisible="false" prefHeight="456.0" prefWidth="572.0" visible="false">
                <xAxis>
                   <NumberAxis label="Wolumin" side="BOTTOM" upperBound="9.0E-4" visible="false" fx:id="xAxis2" />
                </xAxis>

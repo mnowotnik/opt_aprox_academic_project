@@ -7,6 +7,8 @@ import java.util.List;
 import org.encog.ml.data.versatile.NormalizationHelper;
 import org.encog.neural.networks.BasicNetwork;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -144,7 +146,18 @@ public class GuiController implements CalcInterface {
 		
 		solverToggle.setOnAction(showSolverChart);
 		
+		ChangeListener<Number> sliderChange = new ChangeListener<Number>() {
+				@Override
+				public void changed(ObservableValue<? extends Number> arg0,
+						Number arg1, Number arg2)
+				{
+					calculateUnitPriceChart(arg2.intValue());
+					
+				}
+	        };
 		
+	    unitPriceSlider.valueProperty().addListener(sliderChange);
+	
 
 		TextField[] inputFields = new TextField[] { debtTextField,
 				periodTextField, cashTextField };
