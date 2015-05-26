@@ -95,6 +95,11 @@
                 <NumberAxis fx:id="yAxis" label="Zysk" prefHeight="374.0" prefWidth="115.0" side="LEFT" upperBound="700000.0" />
               </yAxis>
             </LineChart>
+            <Button fx:id="fixWorldProblemsButton" layoutX="741.0" layoutY="519.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="108.0" style="-fx-background-color: RED;" text="FIX !" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Button>
          </children>
       </Pane>
    </children>
