@@ -19,6 +19,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.util.StringConverter;
+import javafx.util.converter.NumberStringConverter;
 import opt.Decision;
 import opt.Solver;
 
@@ -91,11 +92,14 @@ public class GuiController implements CalcInterface {
 
 	@FXML
 	private LineChart<Number, Number> lineChart;
+	
+	@FXML
+	private NumberAxis xAxis, yAxis;
 
 	@FXML
 	public void initialize() {
 		lineChart.setLegendVisible(false);
-		NumberAxis xAxis = (NumberAxis) lineChart.getXAxis();
+		//NumberAxis xAxis = (NumberAxis) lineChart.getXAxis();
 		StringConverter<Number> stringFormatter = new StringConverter<Number>() {
 
 		     @Override 
@@ -229,6 +233,7 @@ public class GuiController implements CalcInterface {
 
 		List<Node> nodeList = new ArrayList<Node>();
 		List<Decision> filteredDecisionList = new ArrayList<Decision>();
+		List<Number> fixYScaleList = new ArrayList<Number>();
 		int intTemp = 0;
 
 		for (Decision decision : decisions) {
@@ -247,10 +252,12 @@ public class GuiController implements CalcInterface {
 				series1.getData().add(dataTemp);
 				intTemp++;
 				filteredDecisionList.add(decision);
+				fixYScaleList.add(income);
 			}
 		}
 
 		lineChart.getData().add(series1);
+		yAxis.invalidateRange(fixYScaleList);
 
 		for (int i = 0; i < intTemp; i++) {
 			nodeList.add(lineChart.getData().get(0).getData().get(i).getNode());

@@ -15,6 +15,7 @@ public class Main extends Application {
 				AnchorPane page = (AnchorPane) loader.load();
 				Scene scene = new Scene(page);
 				primaryStage.setTitle("WDEC Solver");
+				primaryStage.setResizable(false);
 				primaryStage.setScene(scene);
 				primaryStage.show();
 			
