@@ -3,6 +3,10 @@ package wdec;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.encog.ml.data.versatile.NormalizationHelper;
+import org.encog.neural.networks.BasicNetwork;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -20,7 +24,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 import opt.Decision;
+import opt.ObjLoader;
 import opt.Solver;
+import opt.UnitPriceFun;
 
 public class GuiController implements CalcInterface {
 
@@ -61,6 +67,7 @@ public class GuiController implements CalcInterface {
 	public void initialize() {
 		lineChart.setLegendVisible(false);
 		unitPriceChart.setLegendVisible(false);
+		calculateUnitPriceChart((int)unitPriceSlider.getValue());
 		
 		StringConverter<Number> stringFormatter = new StringConverter<Number>() {
 
@@ -265,6 +272,30 @@ public class GuiController implements CalcInterface {
 					ev -> fillTextFields(filteredDecisionList.get(temp)));
 		}
 
+	}
+	
+	private void calculateUnitPriceChart(int quality)
+	{
+		unitPriceChart.getData().clear();
+		
+		XYChart.Series<Number,Number> series = new
+				XYChart.Series<Number,Number>();
+		
+		ObjLoader ol = new ObjLoader();
+		BasicNetwork upriceNN = ol.loadUPriceNN();
+		NormalizationHelper upriceNormHelper = ol.loadNormHelperUprice();
+		UnitPriceFun upriceFun = new UnitPriceFun(upriceNormHelper, upriceNN);
+		
+		for(int i = 0; i < 400;i++)
+		{
+			double price = upriceFun.compute(i*1000, quality);
+			XYChart.Data<Number, Number> dataTemp = new XYChart.Data<Number, Number>(i*1000,price);
+			series.getData().add(dataTemp);
+
+		}
+		
+		unitPriceChart.getData().add(series);
+		series.getNode().setStyle("-fx-stroke: LIMEGREEN;");
 	}
 
 }
