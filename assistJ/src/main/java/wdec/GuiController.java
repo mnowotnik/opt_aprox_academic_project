@@ -3,8 +3,8 @@ package wdec;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -12,6 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Data;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.Glow;
@@ -233,7 +234,6 @@ public class GuiController implements CalcInterface {
 		List<Node> nodeList = new ArrayList<Node>();
 		List<Decision> filteredDecisionList = new ArrayList<Decision>();
 		int intTemp = 0;
-		List<Number> fixList = new ArrayList<Number>();
 
 		for (Decision decision : decisions) {
 			double income = decision.objectives.netIncome;
@@ -246,11 +246,14 @@ public class GuiController implements CalcInterface {
 			series1.getData().add(dataTemp);
 			intTemp++;
 			filteredDecisionList.add(decision);
-			fixList.add(income);
 			// }
 		}
 
 		lineChart.getData().add(series1);
+//		yAxis.invalidateRange(lineChart.getData().get(0).getData()
+//				.stream()
+//				.map(Data::getYValue)
+//				.collect(Collectors.toList()));
 
 		for (int i = 0; i < intTemp; i++) {
 			nodeList.add(lineChart.getData().get(0).getData().get(i).getNode());
@@ -260,17 +263,6 @@ public class GuiController implements CalcInterface {
 
 		calculatingInfo.setVisible(false);
 		calculateButton.setDisable(false);
-
-		Task<Void> fixScale = new Task<Void>() {
-			@Override
-			protected Void call() throws Exception {
-
-				yAxis.invalidateRange(fixList);
-				Thread.sleep(1000);
-				return null;
-			}
-		};
-		new Thread(fixScale).start();
 	};
 
 	private void setOnMouseEventsOnSeries(List<Node> nodeList,
