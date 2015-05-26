@@ -102,7 +102,7 @@
             </LineChart>
             <LineChart fx:id="unitPriceChart" animated="false" createSymbols="false" layoutX="599.0" layoutY="68.0" legendVisible="false" prefHeight="456.0" prefWidth="572.0" visible="false">
                <xAxis>
-                  <NumberAxis label="Wolumin" side="BOTTOM" upperBound="9.0E-4" visible="false" fx:id="xAxis2" />
+                  <NumberAxis autoRanging="false" label="Wolumin" side="BOTTOM" tickUnit="50000.0" upperBound="400000.0" visible="false" fx:id="xAxis2" />
                </xAxis>
                <yAxis>
                   <NumberAxis fx:id="yAxis2" forceZeroInRange="false" label="Koszt Jednostkowy" prefHeight="374.0" prefWidth="81.0" side="LEFT" upperBound="700000.0" />
