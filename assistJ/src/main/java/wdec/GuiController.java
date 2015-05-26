@@ -16,8 +16,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.Glow;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
@@ -87,7 +85,7 @@ public class GuiController implements CalcInterface {
 
 	@FXML
 	private TextField riskTextField;
-	
+
 	@FXML
 	private Text riskText;
 
@@ -96,29 +94,27 @@ public class GuiController implements CalcInterface {
 
 	@FXML
 	private LineChart<Number, Number> lineChart;
-	
+
 	@FXML
 	private NumberAxis xAxis, yAxis;
-	
 
 	@FXML
 	public void initialize() {
 		lineChart.setLegendVisible(false);
 		StringConverter<Number> stringFormatter = new StringConverter<Number>() {
 
-		     @Override 
-		     public String toString(Number number) {
-				return (new Double(number.doubleValue()*100)).toString() + '%';
-		     }
+			@Override
+			public String toString(Number number) {
+				return (new Double(number.doubleValue() * 100)).toString() + '%';
+			}
 
 			@Override
-			public Number fromString(String arg0)
-			{
+			public Number fromString(String arg0) {
 				// We don't need this, do we?
 				return null;
 			}
-		 };
-		
+		};
+
 		xAxis.setTickLabelFormatter(stringFormatter);
 
 		debtTextField.setOnKeyPressed(null);
@@ -150,13 +146,12 @@ public class GuiController implements CalcInterface {
 
 		TextField[] inputFields = new TextField[] { debtTextField,
 				periodTextField, cashTextField };
-		EventHandler<KeyEvent> enterExecEv = new EventHandler<KeyEvent>() {
 
-			@Override
-			public void handle(KeyEvent event) {
+		for (TextField tf : inputFields) {
+			tf.setOnKeyPressed(event -> {
 				if (event.getCode().equals(KeyCode.ENTER)) {
-					for (TextField tf : inputFields) {
-						if (tf.getText().equals("")) {
+					for (TextField tf1 : inputFields) {
+						if (tf1.getText().equals("")) {
 							return;
 						}
 
@@ -164,13 +159,9 @@ public class GuiController implements CalcInterface {
 
 					execCalcEv.handle(new ActionEvent());
 				}
-			}
-		};
-
-		for (TextField tf : inputFields) {
-			tf.setOnKeyPressed(enterExecEv);
+			});
 		}
-		
+
 		riskText.setText("0%");
 	}
 
@@ -180,7 +171,8 @@ public class GuiController implements CalcInterface {
 		qualityTextField.setText(Integer.toString(decision.inputArgs.quality));
 		tvTextField.setText(toIntFormat(decision.inputArgs.ads.tv));
 		internetTextField.setText(toIntFormat(decision.inputArgs.ads.internet));
-		magazinesTextField.setText(toIntFormat(decision.inputArgs.ads.warehouse));
+		magazinesTextField
+				.setText(toIntFormat(decision.inputArgs.ads.warehouse));
 		priceTextField.setText(Integer.toString(decision.inputArgs.price));
 		loanTextField.setText(Integer.toString(decision.inputArgs.loan));
 		instalmentTextField.setText(Integer
@@ -199,7 +191,8 @@ public class GuiController implements CalcInterface {
 		BigDecimal formattedRisk = new BigDecimal(risk * 100).setScale(5,
 				BigDecimal.ROUND_HALF_UP);
 
-		realNetIncomeTextField.setText(toIntFormat(decision.objectives.netIncome));
+		realNetIncomeTextField
+				.setText(toIntFormat(decision.objectives.netIncome));
 
 		double wdecIncome = Solver.convertToWdecIncome(
 				decision.objectives.netIncome, decision.inputArgs.instalment);
@@ -241,19 +234,20 @@ public class GuiController implements CalcInterface {
 		List<Decision> filteredDecisionList = new ArrayList<Decision>();
 		int intTemp = 0;
 		List<Number> fixList = new ArrayList<Number>();
-		
+
 		for (Decision decision : decisions) {
 			double income = decision.objectives.netIncome;
 			double risk = 1.0 - decision.objectives.percSold;
 
-//			if(risk <= 0.001)
-//			{
-				XYChart.Data<Number, Number> dataTemp = new XYChart.Data<Number, Number>(risk, income);
-				series1.getData().add(dataTemp);
-				intTemp++;
-				filteredDecisionList.add(decision);
-				fixList.add(income);
-//			}
+			// if(risk <= 0.001)
+			// {
+			XYChart.Data<Number, Number> dataTemp = new XYChart.Data<Number, Number>(
+					risk, income);
+			series1.getData().add(dataTemp);
+			intTemp++;
+			filteredDecisionList.add(decision);
+			fixList.add(income);
+			// }
 		}
 
 		lineChart.getData().add(series1);
@@ -266,7 +260,7 @@ public class GuiController implements CalcInterface {
 
 		calculatingInfo.setVisible(false);
 		calculateButton.setDisable(false);
-		
+
 		Task<Void> fixScale = new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
@@ -274,23 +268,17 @@ public class GuiController implements CalcInterface {
 				yAxis.invalidateRange(fixList);
 				Thread.sleep(1000);
 				return null;
-			}};
-			new Thread(fixScale).start();
+			}
 		};
+		new Thread(fixScale).start();
+	};
 
 	private void setOnMouseEventsOnSeries(List<Node> nodeList,
 			List<Decision> filteredDecisionList) {
 		for (int i = 0; i < nodeList.size(); i++) {
 			final int temp = i;
-			nodeList.get(i).setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-				@Override
-				public void handle(MouseEvent t) {
-
-					fillTextFields(filteredDecisionList.get(temp));
-
-				}
-			});
+			nodeList.get(i).setOnMouseClicked(
+					ev -> fillTextFields(filteredDecisionList.get(temp)));
 		}
 
 	}

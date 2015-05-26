@@ -38,18 +38,16 @@ public class CalculatingThread {
 
 		new Thread(calculations).start();
 
-		Task<Void> glow = new Task<Void>() {
-			@Override
-			protected Void call() throws Exception {
-				while (glowFlag.get()) {
-					calcGlow();
+		glowThread = new Thread(() -> {
+			while (glowFlag.get()) {
+				calcGlow();
+				try {
 					Thread.sleep(20);
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
 				}
-				return null;
 			}
-		};
-
-		glowThread = new Thread(glow);
+		});
 		glowFlag.set(true);
 		glowThread.start();
 
@@ -57,22 +55,11 @@ public class CalculatingThread {
 
 	private void fireAfterCalc() {
 		glowFlag.set(false);
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				listener.addDecisions(decisions);
-
-			}
-		});
+		Platform.runLater(() -> listener.addDecisions(decisions));
 	}
 
 	private void calcGlow() {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				listener.calcGlow();
-			}
-		});
+		Platform.runLater(listener::calcGlow);
 	}
 
 }
