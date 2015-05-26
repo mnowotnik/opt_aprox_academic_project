@@ -158,6 +158,7 @@ public class InvestProblem extends AbstractProblem {
 		int internet = AD_MULTI * vars[3];
 		vars[3] = internet;
 		int warehouse = AD_MULTI * vars[4];
+		vars[4] = warehouse;
 		int price = vars[5];
 		int loan = (int) Math.floor((MAX_DEBT - periodConstraints.debt)
 				* vars[6] / 100);
