@@ -97,9 +97,20 @@
                 <NumberAxis label="Ryzyko" side="BOTTOM" upperBound="9.0E-4" fx:id="xAxis" />
               </xAxis>
               <yAxis>
-                <NumberAxis fx:id="yAxis" label="Zysk" prefHeight="374.0" prefWidth="115.0" side="LEFT" upperBound="700000.0" />
+                <NumberAxis fx:id="yAxis" label="Zysk" prefHeight="374.0" prefWidth="81.0" side="LEFT" upperBound="700000.0" />
               </yAxis>
             </LineChart>
+            <LineChart fx:id="unitPriceChart" layoutX="599.0" layoutY="68.0" prefHeight="456.0" prefWidth="572.0" visible="false">
+               <xAxis>
+                  <NumberAxis label="Wolumin" side="BOTTOM" upperBound="9.0E-4" visible="false" fx:id="xAxis2" />
+               </xAxis>
+               <yAxis>
+                  <NumberAxis fx:id="yAxis2" label="Koszt Jednostkowy" prefHeight="374.0" prefWidth="81.0" side="LEFT" upperBound="700000.0" />
+               </yAxis>
+            </LineChart>
+            <ToggleButton fx:id="solverToggle" layoutX="633.0" layoutY="27.0" mnemonicParsing="false" selected="true" text="Wykres zysku" />
+            <ToggleButton fx:id="unitPriceToggle" layoutX="765.0" layoutY="27.0" mnemonicParsing="false" text="Koszt jednostkowy" />
+            <Slider fx:id="unitPriceSlider" layoutX="694.0" layoutY="527.0" majorTickUnit="10.0" minorTickCount="0" prefHeight="17.0" prefWidth="428.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" visible="false" />
          </children>
       </Pane>
    </children>

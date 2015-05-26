@@ -14,7 +14,9 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.Glow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
@@ -34,58 +36,11 @@ public class GuiController implements CalcInterface {
 	private Button calculateButton;
 
 	@FXML
-	private TextField cashTextField;
-
-	@FXML
-	private TextField debtTextField;
-
-	@FXML
-	private TextField periodTextField;
-
-	@FXML
-	private TextField volumeTextField;
-
-	@FXML
-	private TextField qualityTextField;
-
-	@FXML
-	private TextField tvTextField;
-
-	@FXML
-	private TextField internetTextField;
-
-	@FXML
-	private TextField magazinesTextField;
-
-	@FXML
-	private TextField priceTextField;
-
-	@FXML
-	private TextField loanTextField;
-
-	@FXML
-	private TextField instalmentTextField;
-
-	@FXML
-	private TextField unitPriceTextField;
-
-	@FXML
-	private TextField grossSalesIncomeTextField;
-
-	@FXML
-	private TextField primeCostsTextField;
-
-	@FXML
-	private TextField salesIncomeTextField;
-
-	@FXML
-	private TextField realNetIncomeTextField;
-
-	@FXML
-	private TextField wdecNetIncomeTextField;
-
-	@FXML
-	private TextField riskTextField;
+	private TextField cashTextField, debtTextField, periodTextField, volumeTextField, qualityTextField,
+					  tvTextField, internetTextField, magazinesTextField, priceTextField, loanTextField,
+					  instalmentTextField, unitPriceTextField, grossSalesIncomeTextField, 
+					  primeCostsTextField, salesIncomeTextField, realNetIncomeTextField,
+					  wdecNetIncomeTextField, riskTextField;
 
 	@FXML
 	private Text riskText;
@@ -94,14 +49,22 @@ public class GuiController implements CalcInterface {
 	private Pane calculatingInfo;
 
 	@FXML
-	private LineChart<Number, Number> lineChart;
+	private LineChart<Number, Number> lineChart, unitPriceChart;
 
 	@FXML
-	private NumberAxis xAxis, yAxis;
+	private NumberAxis xAxis, yAxis, xAxis2, yAxis2;
+	
+	@FXML
+	private ToggleButton solverToggle, unitPriceToggle;
 
+	@FXML
+	private Slider unitPriceSlider;
+	
 	@FXML
 	public void initialize() {
 		lineChart.setLegendVisible(false);
+		unitPriceChart.setLegendVisible(false);
+		
 		StringConverter<Number> stringFormatter = new StringConverter<Number>() {
 
 			@Override
@@ -144,6 +107,38 @@ public class GuiController implements CalcInterface {
 		};
 
 		calculateButton.setOnAction(execCalcEv);
+		
+		EventHandler<ActionEvent> showUnitPriceChart = new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+
+				lineChart.setVisible(false);
+				unitPriceChart.setVisible(true);
+				unitPriceSlider.setVisible(true);
+				unitPriceToggle.setSelected(true);
+				solverToggle.setSelected(false);
+				}
+		};
+		
+		unitPriceToggle.setOnAction(showUnitPriceChart);
+		
+		EventHandler<ActionEvent> showSolverChart = new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+
+				lineChart.setVisible(true);
+				unitPriceChart.setVisible(false);
+				unitPriceSlider.setVisible(false);
+				unitPriceToggle.setSelected(false);
+				solverToggle.setSelected(true);
+				}
+		};
+		
+		solverToggle.setOnAction(showSolverChart);
+		
+		
 
 		TextField[] inputFields = new TextField[] { debtTextField,
 				periodTextField, cashTextField };
