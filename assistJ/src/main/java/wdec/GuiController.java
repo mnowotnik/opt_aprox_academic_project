@@ -234,21 +234,19 @@ public class GuiController implements CalcInterface {
 		List<Node> nodeList = new ArrayList<Node>();
 		List<Decision> filteredDecisionList = new ArrayList<Decision>();
 		int intTemp = 0;
-
 		for (Decision decision : decisions) {
 			double income = decision.objectives.netIncome;
 			double risk = 1.0 - decision.objectives.percSold;
 
-			// if(risk <= 0.001)
-			// {
-			XYChart.Data<Number, Number> dataTemp = new XYChart.Data<Number, Number>(
-					risk, income);
-			series1.getData().add(dataTemp);
-			intTemp++;
-			filteredDecisionList.add(decision);
-			// }
+//			if(risk <= 0.001)
+//			{
+				XYChart.Data<Number, Number> dataTemp = new XYChart.Data<Number, Number>(risk, income);
+				series1.getData().add(dataTemp);
+				intTemp++;
+				filteredDecisionList.add(decision);
+//			}
 		}
-
+		
 		lineChart.getData().add(series1);
 //		yAxis.invalidateRange(lineChart.getData().get(0).getData()
 //				.stream()
