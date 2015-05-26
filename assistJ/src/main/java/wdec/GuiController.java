@@ -19,6 +19,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 import opt.Decision;
 import opt.Solver;
@@ -86,6 +87,9 @@ public class GuiController implements CalcInterface {
 
 	@FXML
 	private TextField riskTextField;
+	
+	@FXML
+	private Text riskText;
 
 	@FXML
 	private Pane calculatingInfo;
@@ -167,6 +171,8 @@ public class GuiController implements CalcInterface {
 		for (TextField tf : inputFields) {
 			tf.setOnKeyPressed(enterExecEv);
 		}
+		
+		riskText.setText("0%");
 	}
 
 	@Override
@@ -200,7 +206,7 @@ public class GuiController implements CalcInterface {
 				decision.objectives.netIncome, decision.inputArgs.instalment);
 		wdecNetIncomeTextField.setText(toIntFormat(Math.round(wdecIncome)));
 
-		riskTextField.setText(formattedRisk.toString() + '%');
+		riskText.setText(formattedRisk.toString() + '%');
 	}
 
 	private String toIntFormat(double d) {

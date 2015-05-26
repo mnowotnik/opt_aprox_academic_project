@@ -12,7 +12,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wdec.GuiController">
    <children>
-      <Pane prefHeight="590.0" prefWidth="1196.0">
+      <Pane prefHeight="582.0" prefWidth="1196.0">
          <children>
             <Pane layoutX="14.0" layoutY="27.0" prefHeight="205.0" prefWidth="253.0" style="-fx-border-width: 3; -fx-border-color: CCCCCC; -fx-border-radius: 2;">
                <children>
@@ -73,10 +73,15 @@
                   <TextField fx:id="salesIncomeTextField" alignment="CENTER_RIGHT" editable="false" layoutX="456.0" layoutY="46.0" prefHeight="31.0" prefWidth="117.0" />
                   <TextField fx:id="realNetIncomeTextField" alignment="CENTER_RIGHT" editable="false" layoutX="456.0" layoutY="86.0" prefHeight="31.0" prefWidth="117.0" />
                   <TextField fx:id="wdecNetIncomeTextField" alignment="CENTER_RIGHT" editable="false" layoutX="456.0" layoutY="130.0" prefHeight="31.0" prefWidth="117.0" />
-                  <TextField fx:id="riskTextField" alignment="CENTER_RIGHT" editable="false" layoutX="317.0" layoutY="186.0" prefHeight="31.0" prefWidth="117.0" />
+                  <TextField fx:id="riskTextField" alignment="CENTER_RIGHT" editable="false" layoutX="317.0" layoutY="186.0" prefHeight="31.0" prefWidth="117.0" visible="false" />
                   <Text layoutX="317.0" layoutY="151.0" strokeType="OUTSIDE" strokeWidth="0.0" text="wdecNetIncome" />
-                  <Text layoutX="174.0" layoutY="207.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ryzyko" />
+                  <Text layoutX="207.0" layoutY="207.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ryzyko" />
                   <Text layoutX="317.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zysk Netto" />
+                  <Text fx:id="riskText" fontSmoothingType="LCD" layoutX="328.0" layoutY="211.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                     <font>
+                        <Font name="System Italic" size="24.0" />
+                     </font>
+                  </Text>
                </children>
             </Pane>
             <Line endX="490.0" layoutX="100.0" layoutY="535.0" startX="-100.0" stroke="#8d8d8d" />
