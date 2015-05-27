@@ -14,6 +14,7 @@ public class Main extends Application {
 				loader.setLocation(Main.class.getResource("SimpleGui.fxml"));
 				AnchorPane page = (AnchorPane) loader.load();
 				Scene scene = new Scene(page);
+				scene.getStylesheets().add(Main.class.getResource("slider.css").toExternalForm());
 				primaryStage.setTitle("WDEC Solver");
 				primaryStage.setResizable(false);
 				primaryStage.setScene(scene);

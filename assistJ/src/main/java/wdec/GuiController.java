@@ -23,6 +23,8 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.Glow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 import opt.Decision;
@@ -51,25 +53,57 @@ public class GuiController implements CalcInterface {
 	private Text riskText, qualityText;
 
 	@FXML
-	private Pane calculatingInfo;
+	private Pane calculatingInfo, precSoldControlls;
 
 	@FXML
-	private LineChart<Number, Number> lineChart, unitPriceChart;
+	private LineChart<Number, Number> lineChart, unitPriceChart, precSoldChart;
 
 	@FXML
 	private NumberAxis xAxis, yAxis, xAxis2, yAxis2;
 	
 	@FXML
-	private ToggleButton solverToggle, unitPriceToggle;
+	private ToggleButton solverToggle, unitPriceToggle, precSoldToggle;
 
 	@FXML
 	private Slider unitPriceSlider;
+	
+	@FXML
+	private Circle pricePlaceholder, tvPlaceholder, internetPlaceholder, magazinesPlaceholder;
+	
+	private Slider priceKnob, tvKnob, internetKnob, magazinesKnob;
 	
 	@FXML
 	public void initialize() {
 		lineChart.setLegendVisible(false);
 		unitPriceChart.setLegendVisible(false);
 		calculateUnitPriceChart((int)unitPriceSlider.getValue());
+		
+		Circle[] circles = new Circle[] {pricePlaceholder,tvPlaceholder,internetPlaceholder,magazinesPlaceholder};
+		for(Circle circle: circles)
+		{
+			circle.setVisible(false);
+		}
+		
+		ChangeListener<Number> priceKnobChange = new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> arg0,
+					Number arg1, Number arg2)
+			{
+				//calculatePriceSoldChart(arg2.intValue());
+				
+			}
+        };
+        
+		priceKnob = initializeKnob(pricePlaceholder);
+		tvKnob = initializeKnob(tvPlaceholder);
+		internetKnob = initializeKnob(internetPlaceholder);
+		magazinesKnob = initializeKnob(magazinesPlaceholder);
+		
+		priceKnob.valueProperty().addListener(priceKnobChange);
+		//tvKnob.valueProperty().addListener(tvKnobChange);
+		//internetKnob.valueProperty().addListener(internetKnobChange);
+		//magazinesKnob.valueProperty().addListener(magazinesKnobChange);
+        
 		
 		StringConverter<Number> stringFormatter = new StringConverter<Number>() {
 
@@ -120,11 +154,17 @@ public class GuiController implements CalcInterface {
 			public void handle(ActionEvent event) {
 
 				lineChart.setVisible(false);
+				solverToggle.setSelected(false);
+				
 				unitPriceChart.setVisible(true);
 				unitPriceSlider.setVisible(true);
 				unitPriceToggle.setSelected(true);
-				solverToggle.setSelected(false);
 				qualityText.setVisible(true);
+				
+				precSoldChart.setVisible(false);
+				precSoldToggle.setSelected(false);
+				precSoldControlls.setVisible(false);
+
 				}
 		};
 		
@@ -136,15 +176,43 @@ public class GuiController implements CalcInterface {
 			public void handle(ActionEvent event) {
 
 				lineChart.setVisible(true);
+				solverToggle.setSelected(true);
+				
 				unitPriceChart.setVisible(false);
 				unitPriceSlider.setVisible(false);
 				unitPriceToggle.setSelected(false);
-				solverToggle.setSelected(true);
 				qualityText.setVisible(false);
+				
+				precSoldChart.setVisible(false);
+				precSoldToggle.setSelected(false);
+				precSoldControlls.setVisible(false);
+				
 				}
 		};
 		
 		solverToggle.setOnAction(showSolverChart);
+		
+		EventHandler<ActionEvent> showPrecSoldChart = new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+
+				lineChart.setVisible(false);
+				solverToggle.setSelected(false);
+				
+				unitPriceChart.setVisible(false);
+				unitPriceSlider.setVisible(false);
+				unitPriceToggle.setSelected(false);
+				qualityText.setVisible(false);
+				
+				precSoldChart.setVisible(true);
+				precSoldToggle.setSelected(true);
+				precSoldControlls.setVisible(true);
+				
+				}
+		};
+		
+		precSoldToggle.setOnAction(showPrecSoldChart);
 		
 		ChangeListener<Number> sliderChange = new ChangeListener<Number>() {
 				@Override
@@ -309,6 +377,21 @@ public class GuiController implements CalcInterface {
 		
 		unitPriceChart.getData().add(series);
 		series.getNode().setStyle("-fx-stroke: LIMEGREEN;");
+	}
+	
+	private Slider initializeKnob(Circle placeholder)
+	{
+		Slider slider = new Slider(1,150,1);
+		slider.setBlockIncrement(0.1);
+		//slider.setId("knob");
+		slider.getStyleClass().add("knobStyle");
+        precSoldControlls.getChildren().add(slider);
+        slider.resizeRelocate(placeholder.getLayoutX()-placeholder.getRadius(),
+        			placeholder.getLayoutY()-placeholder.getRadius(),
+        			placeholder.getRadius(),
+        			placeholder.getRadius());
+        return slider;
+        
 	}
 
 }
