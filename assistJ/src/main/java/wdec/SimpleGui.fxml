@@ -113,12 +113,12 @@
             <Slider fx:id="unitPriceSlider" layoutX="694.0" layoutY="527.0" majorTickUnit="10.0" minorTickCount="0" prefHeight="17.0" prefWidth="428.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" visible="false" />
             <Text fx:id="qualityText" layoutX="894.0" layoutY="592.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Jakość" visible="false" />
             <ToggleButton fx:id="precSoldToggle" layoutX="929.0" layoutY="27.0" mnemonicParsing="false" text="Procent sprzedanych" />
-            <LineChart fx:id="precSoldChart" layoutX="599.0" layoutY="68.0" prefHeight="456.0" prefWidth="572.0" visible="false">
+            <LineChart fx:id="precSoldChart" animated="false" createSymbols="false" layoutX="599.0" layoutY="68.0" prefHeight="456.0" prefWidth="572.0" visible="false">
                <xAxis>
                   <NumberAxis autoRanging="false" label="Jakość" side="BOTTOM" />
                </xAxis>
                <yAxis>
-                  <NumberAxis label="Procent Sprzedanych" prefHeight="374.0" prefWidth="81.0" side="LEFT" upperBound="700000.0" />
+                  <NumberAxis autoRanging="false" label="Procent Sprzedanych" prefHeight="374.0" prefWidth="81.0" side="LEFT" tickUnit="0.1" upperBound="1.0" />
                </yAxis>
             </LineChart>
             <Pane fx:id="precSoldControlls" layoutX="693.0" layoutY="516.0" prefHeight="95.0" prefWidth="462.0" visible="false">

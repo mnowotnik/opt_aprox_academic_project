@@ -23,12 +23,14 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.effect.Glow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
+import javafx.util.converter.PercentageStringConverter;
+import opt.Advertisments;
 import opt.Decision;
 import opt.ObjLoader;
+import opt.PercSoldFun;
 import opt.Solver;
 import opt.UnitPriceFun;
 
@@ -76,7 +78,10 @@ public class GuiController implements CalcInterface {
 	public void initialize() {
 		lineChart.setLegendVisible(false);
 		unitPriceChart.setLegendVisible(false);
+		precSoldChart.setLegendVisible(false);
+		
 		calculateUnitPriceChart((int)unitPriceSlider.getValue());
+		
 		
 		Circle[] circles = new Circle[] {pricePlaceholder,tvPlaceholder,internetPlaceholder,magazinesPlaceholder};
 		for(Circle circle: circles)
@@ -84,25 +89,25 @@ public class GuiController implements CalcInterface {
 			circle.setVisible(false);
 		}
 		
-		ChangeListener<Number> priceKnobChange = new ChangeListener<Number>() {
+		ChangeListener<Number> knobChange = new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> arg0,
 					Number arg1, Number arg2)
 			{
-				//calculatePriceSoldChart(arg2.intValue());
-				
+				calculatePrecSoldChart();
 			}
         };
         
-		priceKnob = initializeKnob(pricePlaceholder);
-		tvKnob = initializeKnob(tvPlaceholder);
-		internetKnob = initializeKnob(internetPlaceholder);
-		magazinesKnob = initializeKnob(magazinesPlaceholder);
+		priceKnob = initializeKnob(pricePlaceholder, 80);
+		tvKnob = initializeKnob(tvPlaceholder, 500);
+		internetKnob = initializeKnob(internetPlaceholder, 500);
+		magazinesKnob = initializeKnob(magazinesPlaceholder, 500);
 		
-		priceKnob.valueProperty().addListener(priceKnobChange);
-		//tvKnob.valueProperty().addListener(tvKnobChange);
-		//internetKnob.valueProperty().addListener(internetKnobChange);
-		//magazinesKnob.valueProperty().addListener(magazinesKnobChange);
+		priceKnob.valueProperty().addListener(knobChange);
+		tvKnob.valueProperty().addListener(knobChange);
+		internetKnob.valueProperty().addListener(knobChange);
+		magazinesKnob.valueProperty().addListener(knobChange);
+		calculatePrecSoldChart();
         
 		
 		StringConverter<Number> stringFormatter = new StringConverter<Number>() {
@@ -120,6 +125,7 @@ public class GuiController implements CalcInterface {
 		};
 
 		xAxis.setTickLabelFormatter(stringFormatter);
+		((NumberAxis)precSoldChart.getYAxis()).setTickLabelFormatter(new PercentageStringConverter());
 
 		debtTextField.setOnKeyPressed(null);
 
@@ -379,9 +385,9 @@ public class GuiController implements CalcInterface {
 		series.getNode().setStyle("-fx-stroke: LIMEGREEN;");
 	}
 	
-	private Slider initializeKnob(Circle placeholder)
+	private Slider initializeKnob(Circle placeholder, int maxValue)
 	{
-		Slider slider = new Slider(1,150,1);
+		Slider slider = new Slider(1,maxValue,1);
 		slider.setBlockIncrement(0.1);
 		//slider.setId("knob");
 		slider.getStyleClass().add("knobStyle");
@@ -392,6 +398,35 @@ public class GuiController implements CalcInterface {
         			placeholder.getRadius());
         return slider;
         
+	}
+	
+	protected void calculatePrecSoldChart()
+	{
+		int price = (int) priceKnob.getValue();
+		int tv = (int) tvKnob.getValue()*1000;
+		int internet = (int) internetKnob.getValue()*1000;
+		int magazines = (int) magazinesKnob.getValue()*1000;
+		
+		precSoldChart.getData().clear();
+		
+		XYChart.Series<Number,Number> series = new
+				XYChart.Series<Number,Number>();
+		
+		ObjLoader ol = new ObjLoader();
+		BasicNetwork percSoldNN = ol.loadPercSoldNN();
+		NormalizationHelper percSoldNormHelper = ol.loadNormHelperPercSold();
+		PercSoldFun percSoldFun = new PercSoldFun(percSoldNormHelper, percSoldNN);
+		
+		for(int i = 0; i < 100;i++)
+		{
+			double precSold = percSoldFun.compute(i, price, new Advertisments(tv, internet, magazines));
+			XYChart.Data<Number, Number> dataTemp = new XYChart.Data<Number, Number>(i,precSold);
+			series.getData().add(dataTemp);
+
+		}
+		
+		precSoldChart.getData().add(series);
+		series.getNode().setStyle("-fx-stroke: BLUE;");
 	}
 
 }
