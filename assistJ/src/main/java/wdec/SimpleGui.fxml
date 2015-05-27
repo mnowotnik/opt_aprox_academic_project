@@ -69,12 +69,11 @@
                   <TextField fx:id="grossSalesIncomeTextField" alignment="CENTER_RIGHT" editable="false" layoutX="148.0" layoutY="87.0" prefHeight="31.0" prefWidth="117.0" />
                   <TextField fx:id="primeCostsTextField" alignment="CENTER_RIGHT" editable="false" layoutX="148.0" layoutY="130.0" prefHeight="31.0" prefWidth="117.0" />
                   <Text layoutX="14.0" layoutY="151.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Koszty Własne" />
-                  <Text layoutX="317.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" text="realNetIncome" />
+                  <Text layoutX="317.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Prawdziwy Zysk" />
                   <TextField fx:id="salesIncomeTextField" alignment="CENTER_RIGHT" editable="false" layoutX="456.0" layoutY="46.0" prefHeight="31.0" prefWidth="117.0" />
                   <TextField fx:id="realNetIncomeTextField" alignment="CENTER_RIGHT" editable="false" layoutX="456.0" layoutY="86.0" prefHeight="31.0" prefWidth="117.0" />
                   <TextField fx:id="wdecNetIncomeTextField" alignment="CENTER_RIGHT" editable="false" layoutX="456.0" layoutY="130.0" prefHeight="31.0" prefWidth="117.0" />
                   <TextField fx:id="riskTextField" alignment="CENTER_RIGHT" editable="false" layoutX="317.0" layoutY="186.0" prefHeight="31.0" prefWidth="117.0" visible="false" />
-                  <Text layoutX="317.0" layoutY="151.0" strokeType="OUTSIDE" strokeWidth="0.0" text="wdecNetIncome" />
                   <Text layoutX="179.0" layoutY="238.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ryzyko">
                      <font>
                         <Font size="18.0" />
