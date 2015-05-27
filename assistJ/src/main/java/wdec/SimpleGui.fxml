@@ -12,7 +12,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="wdec.GuiController">
    <children>
-      <Pane prefHeight="611.0" prefWidth="1196.0">
+      <Pane prefHeight="649.0" prefWidth="1196.0">
          <children>
             <Pane layoutX="14.0" layoutY="27.0" prefHeight="205.0" prefWidth="253.0" style="-fx-border-width: 3; -fx-border-color: CCCCCC; -fx-border-radius: 2;">
                <children>
@@ -56,7 +56,7 @@
                </children>
             </Pane>
             <Line endX="490.0" layoutX="100.0" layoutY="360.0" startX="-100.0" />
-            <Pane layoutY="360.0" prefHeight="235.0" prefWidth="607.0">
+            <Pane layoutY="360.0" prefHeight="287.0" prefWidth="591.0">
                <children>
                   <Text layoutX="248.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Parametry">
                      <font>
@@ -75,11 +75,14 @@
                   <TextField fx:id="wdecNetIncomeTextField" alignment="CENTER_RIGHT" editable="false" layoutX="456.0" layoutY="130.0" prefHeight="31.0" prefWidth="117.0" />
                   <TextField fx:id="riskTextField" alignment="CENTER_RIGHT" editable="false" layoutX="317.0" layoutY="186.0" prefHeight="31.0" prefWidth="117.0" visible="false" />
                   <Text layoutX="317.0" layoutY="151.0" strokeType="OUTSIDE" strokeWidth="0.0" text="wdecNetIncome" />
-                  <Text layoutX="207.0" layoutY="207.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ryzyko" />
-                  <Text layoutX="317.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zysk Netto" />
-                  <Text fx:id="riskText" fontSmoothingType="LCD" layoutX="328.0" layoutY="211.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                  <Text layoutX="179.0" layoutY="238.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ryzyko">
                      <font>
-                        <Font name="System Italic" size="24.0" />
+                        <Font size="18.0" />
+                     </font></Text>
+                  <Text layoutX="317.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zysk Netto" />
+                  <Text fx:id="riskText" fontSmoothingType="LCD" layoutX="327.0" layoutY="242.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                     <font>
+                        <Font name="System Italic" size="29.0" />
                      </font>
                   </Text>
                </children>
@@ -91,7 +94,7 @@
                   <Text layoutX="44.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Trwa obliczanie..." />
                </children>
             </Pane>
-            <Line endY="640.0" layoutX="590.0" />
+            <Line endY="680.0" layoutX="590.0" />
             <LineChart fx:id="lineChart" layoutX="599.0" layoutY="68.0" prefHeight="456.0" prefWidth="572.0">
               <xAxis>
                 <NumberAxis label="Ryzyko" side="BOTTOM" upperBound="9.0E-4" fx:id="xAxis" />
@@ -110,8 +113,8 @@
             </LineChart>
             <ToggleButton fx:id="solverToggle" layoutX="633.0" layoutY="27.0" mnemonicParsing="false" selected="true" text="Wykres zysku" />
             <ToggleButton fx:id="unitPriceToggle" layoutX="765.0" layoutY="27.0" mnemonicParsing="false" text="Koszt jednostkowy" />
-            <Slider fx:id="unitPriceSlider" layoutX="694.0" layoutY="527.0" majorTickUnit="10.0" minorTickCount="0" prefHeight="17.0" prefWidth="428.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" visible="false" />
-            <Text fx:id="qualityText" layoutX="894.0" layoutY="592.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Jakość" visible="false" />
+            <Slider fx:id="unitPriceSlider" layoutX="694.0" layoutY="547.0" majorTickUnit="10.0" minorTickCount="0" prefHeight="17.0" prefWidth="428.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" visible="false" />
+            <Text fx:id="qualityText" layoutX="894.0" layoutY="612.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Jakość" visible="false" />
             <ToggleButton fx:id="precSoldToggle" layoutX="929.0" layoutY="27.0" mnemonicParsing="false" text="Procent sprzedanych" />
             <LineChart fx:id="precSoldChart" animated="false" createSymbols="false" layoutX="599.0" layoutY="68.0" prefHeight="456.0" prefWidth="572.0" visible="false">
                <xAxis>
@@ -121,7 +124,7 @@
                   <NumberAxis autoRanging="false" label="Procent Sprzedanych" lowerBound="0.4" prefHeight="374.0" prefWidth="81.0" side="LEFT" tickUnit="0.05" upperBound="1.0" />
                </yAxis>
             </LineChart>
-            <Pane fx:id="precSoldControlls" layoutX="693.0" layoutY="516.0" prefHeight="95.0" prefWidth="462.0" visible="false">
+            <Pane fx:id="precSoldControlls" layoutX="693.0" layoutY="516.0" prefHeight="131.0" prefWidth="462.0" visible="false">
                <children>
                   <Circle fx:id="magazinesPlaceholder" fill="DODGERBLUE" layoutX="375.0" layoutY="25.0" radius="23.0" stroke="BLACK" strokeType="INSIDE" />
                   <Circle fx:id="internetPlaceholder" fill="DODGERBLUE" layoutX="275.0" layoutY="25.0" radius="23.0" stroke="BLACK" strokeType="INSIDE" />
@@ -131,6 +134,10 @@
                   <Text layoutX="166.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TV" />
                   <Text layoutX="249.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Internet" textAlignment="CENTER" />
                   <Text layoutX="341.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Magazyny" textAlignment="CENTER" />
+                  <TextField fx:id="priceTF" alignment="CENTER" layoutX="33.0" layoutY="80.0" prefHeight="31.0" prefWidth="89.0" />
+                  <TextField fx:id="tvTF" alignment="CENTER" layoutX="131.0" layoutY="80.0" prefHeight="31.0" prefWidth="89.0" />
+                  <TextField fx:id="internetTF" alignment="CENTER" layoutX="231.0" layoutY="80.0" prefHeight="31.0" prefWidth="89.0" />
+                  <TextField fx:id="magazinesTF" alignment="CENTER" layoutX="330.0" layoutY="80.0" prefHeight="31.0" prefWidth="89.0" />
                </children>
             </Pane>
          </children>

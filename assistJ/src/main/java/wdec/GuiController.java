@@ -49,7 +49,7 @@ public class GuiController implements CalcInterface {
 					  tvTextField, internetTextField, magazinesTextField, priceTextField, loanTextField,
 					  instalmentTextField, unitPriceTextField, grossSalesIncomeTextField, 
 					  primeCostsTextField, salesIncomeTextField, realNetIncomeTextField,
-					  wdecNetIncomeTextField, riskTextField;
+					  wdecNetIncomeTextField, riskTextField, priceTF, tvTF, internetTF, magazinesTF;
 
 	@FXML
 	private Text riskText, qualityText;
@@ -402,10 +402,10 @@ public class GuiController implements CalcInterface {
 	
 	protected void calculatePrecSoldChart()
 	{
-		int price = (int) priceKnob.getValue();
-		int tv = (int) tvKnob.getValue()*1000;
-		int internet = (int) internetKnob.getValue()*1000;
-		int magazines = (int) magazinesKnob.getValue()*1000;
+		Integer price = (int) priceKnob.getValue();
+		Integer tv = (int) tvKnob.getValue()*1000;
+		Integer internet = (int) internetKnob.getValue()*1000;
+		Integer magazines = (int) magazinesKnob.getValue()*1000;
 		
 		precSoldChart.getData().clear();
 		
@@ -427,6 +427,12 @@ public class GuiController implements CalcInterface {
 		
 		precSoldChart.getData().add(series);
 		series.getNode().setStyle("-fx-stroke: BLUE;");
+		
+		priceTF.setText(price.toString());
+		tvTF.setText(tv.toString());
+		internetTF.setText(internet.toString());
+		magazinesTF.setText(magazines.toString());
+		
 	}
 
 }
