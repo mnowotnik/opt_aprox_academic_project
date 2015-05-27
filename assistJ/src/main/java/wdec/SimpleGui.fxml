@@ -128,8 +128,8 @@
                   <Circle fx:id="tvPlaceholder" fill="DODGERBLUE" layoutX="175.0" layoutY="25.0" radius="23.0" stroke="BLACK" strokeType="INSIDE" />
                   <Circle fx:id="pricePlaceholder" fill="DODGERBLUE" layoutX="75.0" layoutY="25.0" radius="23.0" stroke="BLACK" strokeType="INSIDE" />
                   <Text layoutX="58.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cena" textAlignment="CENTER" />
-                  <Text layoutX="149.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TV" textAlignment="CENTER" />
-                  <Text layoutX="266.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Internet" textAlignment="CENTER" />
+                  <Text layoutX="166.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TV" />
+                  <Text layoutX="249.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Internet" textAlignment="CENTER" />
                   <Text layoutX="341.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Magazyny" textAlignment="CENTER" />
                </children>
             </Pane>
