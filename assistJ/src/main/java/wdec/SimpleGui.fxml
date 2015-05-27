@@ -134,10 +134,10 @@
                   <Text layoutX="166.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TV" />
                   <Text layoutX="249.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Internet" textAlignment="CENTER" />
                   <Text layoutX="341.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Magazyny" textAlignment="CENTER" />
-                  <TextField fx:id="priceTF" alignment="CENTER" layoutX="33.0" layoutY="80.0" prefHeight="31.0" prefWidth="89.0" />
-                  <TextField fx:id="tvTF" alignment="CENTER" layoutX="131.0" layoutY="80.0" prefHeight="31.0" prefWidth="89.0" />
-                  <TextField fx:id="internetTF" alignment="CENTER" layoutX="231.0" layoutY="80.0" prefHeight="31.0" prefWidth="89.0" />
-                  <TextField fx:id="magazinesTF" alignment="CENTER" layoutX="330.0" layoutY="80.0" prefHeight="31.0" prefWidth="89.0" />
+                  <TextField fx:id="priceTF" alignment="CENTER" editable="false" layoutX="33.0" layoutY="80.0" prefHeight="31.0" prefWidth="89.0" />
+                  <TextField fx:id="tvTF" alignment="CENTER" editable="false" layoutX="131.0" layoutY="80.0" prefHeight="31.0" prefWidth="89.0" />
+                  <TextField fx:id="internetTF" alignment="CENTER" editable="false" layoutX="231.0" layoutY="80.0" prefHeight="31.0" prefWidth="89.0" />
+                  <TextField fx:id="magazinesTF" alignment="CENTER" editable="false" layoutX="330.0" layoutY="80.0" prefHeight="31.0" prefWidth="89.0" />
                </children>
             </Pane>
          </children>
