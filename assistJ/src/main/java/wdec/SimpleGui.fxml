@@ -118,7 +118,7 @@
                   <NumberAxis autoRanging="false" label="Jakość" side="BOTTOM" />
                </xAxis>
                <yAxis>
-                  <NumberAxis autoRanging="false" label="Procent Sprzedanych" prefHeight="374.0" prefWidth="81.0" side="LEFT" tickUnit="0.1" upperBound="1.0" />
+                  <NumberAxis autoRanging="false" label="Procent Sprzedanych" lowerBound="0.4" prefHeight="374.0" prefWidth="81.0" side="LEFT" tickUnit="0.05" upperBound="1.0" />
                </yAxis>
             </LineChart>
             <Pane fx:id="precSoldControlls" layoutX="693.0" layoutY="516.0" prefHeight="95.0" prefWidth="462.0" visible="false">
