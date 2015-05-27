@@ -74,6 +74,7 @@
                   <TextField fx:id="realNetIncomeTextField" alignment="CENTER_RIGHT" editable="false" layoutX="456.0" layoutY="86.0" prefHeight="31.0" prefWidth="117.0" />
                   <TextField fx:id="wdecNetIncomeTextField" alignment="CENTER_RIGHT" editable="false" layoutX="456.0" layoutY="130.0" prefHeight="31.0" prefWidth="117.0" />
                   <TextField fx:id="riskTextField" alignment="CENTER_RIGHT" editable="false" layoutX="317.0" layoutY="186.0" prefHeight="31.0" prefWidth="117.0" visible="false" />
+                  <Text layoutX="317.0" layoutY="151.0" strokeType="OUTSIDE" strokeWidth="0.0" text="WDEC Zysk" />
                   <Text layoutX="179.0" layoutY="238.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ryzyko">
                      <font>
                         <Font size="18.0" />
