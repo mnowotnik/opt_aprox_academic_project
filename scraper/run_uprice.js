@@ -22,16 +22,23 @@ var pass = credentials.password;
 
 var values = (function() {
 
-    var qualityRate = samplingInfo(35, 45, 1, 'quality');
-    var volumeRate = samplingInfo(60000,200000, 1000, 'volume');
+    var qualityRate = samplingInfo(1, 85, 1, 'quality');
+    var volumeRate = samplingInfo(0,0, 1000, 'volume');
 
     var qmin = qualityRate.min;
-    var qmax = qualityRate.max;
+    var qmax = qualityRate.max
     var qinc = qualityRate.inc;
     var vmin = volumeRate.min;
     var vmax = volumeRate.max;
     var vinc =volumeRate.inc;
     var samples = [];
+
+    // for(var j=348000;j<=400000;j+=1000){
+    //     var sample = {
+    //         quality:25, volume:j
+    //     };
+    //     samples.push(sample);
+    // }
 
     for(var i=qmin;i<=qmax;i+=qinc){
         for(var j=vmin;j<=vmax;j+=vinc){

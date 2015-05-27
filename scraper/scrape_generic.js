@@ -270,6 +270,10 @@ var scraper = function(config) {
                 var moneyLimit = config.extra.moneyLimit;
                 var unitPrice = self.unitPrice;
                 var volume = Math.round((moneyLimit-moneySpent)/unitPrice);
+                var volLimit = config.extra.volumeLimit;
+                if(volLimit && volLimit<volume){
+                    volume = volLimit;
+                }
                 moneySpent += volume * unitPrice;
                 var income = Math.round(self.soldRatio * volume * values.price);
                 msg('spent',moneySpent,'inc', income,'vol',volume);

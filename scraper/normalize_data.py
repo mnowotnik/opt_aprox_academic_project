@@ -54,6 +54,33 @@ def normalize_uprice_samples(path):
     data_items.sort()
     data_items = [ (x[0][0],x[0][1],x[1]) for x in data_items]
     write_csv('n_uprice.csv','\t',data_items,['volume','quality','unit_price'])
+
+def normalize_percsold(path):
+    data = read_csv(path, '\t',
+                        {'quality': int,
+                         'tv': int,
+                         'internet' : int,
+                         'warehouse': int,
+                         'price' : float,
+                         'sold_ratio': float
+                         })
+    data_d= {}
+    for row in data:
+        key = (row('quality'),
+                row('tv'),
+                row('internet'),
+                row('warehouse'),
+                row('price'))
+        val = row('sold_ratio')
+        if key in data_d and data_d[key] != val:
+            print(key)
+            raise Exception('unequal data')
+        data_d[key] = row('sold_ratio')
+
+    data_items = list(data_d.items())
+    data_items.sort()
+    data_items = [ (x[0][0],x[0][1],x[0][2],x[0][3],x[0][4],x[1]) for x in data_items]
+    write_csv('norm_percsold.csv','\t',data_items,['quality','tv','internet','warehouse','price','sold_ratio'])
     
 def normalize_sold_ratio_samples(path):
     paths = glob.glob(path)
@@ -109,5 +136,6 @@ def print_counter(ct):
     for k in ct:
         print(ct[k],k)
 
-normalize_uprice_samples('./data/solid/unit_price.csv')
+# normalize_uprice_samples('./data/solid/unit_price.csv')
 # normalize_sold_ratio_samples('./data/solid/fin_genetic.csv')
+normalize_percsold('./percsold.csv')
