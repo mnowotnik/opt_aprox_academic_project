@@ -111,29 +111,33 @@ public class NeuralTraining {
 				ColumnType.continuous);
 		ds.analyze();
 		ds.defineSingleOutputOthersInput(percSoldCol);
-//		ds.getNormHelper().setStrategy(getTanhNormalization());
-		 EncogModel model = new EncogModel(ds);
-		 model.selectMethod(ds, MLMethodFactory.TYPE_FEEDFORWARD);
+		// ds.getNormHelper().setStrategy(getTanhNormalization());
+		EncogModel model = new EncogModel(ds);
+
+		// model.selectMethod(ds, MLMethodFactory.TYPE_FEEDFORWARD, NN_ARCH,
+		// "rprop", "");
+		model.selectMethod(ds, MLMethodFactory.TYPE_FEEDFORWARD);
 		ds.normalize();
 
-		 model.holdBackValidation(0.3, true, 1001);
-		 model.selectTrainingType(ds);
-//		BasicNetwork network = (BasicNetwork) (new MLMethodFactory().create(
-//				MLMethodFactory.TYPE_FEEDFORWARD, arch, IN_N, OUT_N));
-//		final ResilientPropagation train = new ResilientPropagation(network, ds);
+		model.holdBackValidation(0.3, true, 1001);
+		model.selectTrainingType(ds);
+		// BasicNetwork network = (BasicNetwork) (new MLMethodFactory().create(
+		// MLMethodFactory.TYPE_FEEDFORWARD, arch, IN_N, OUT_N));
+		// final ResilientPropagation train = new ResilientPropagation(network,
+		// ds);
 
 		NormalizationHelper helper = ds.getNormHelper();
 
-//		int epoch = 1;
-//
-//		do {
-//			train.iteration();
-//			System.out
-//					.println("Epoch #" + epoch + " Error:" + train.getError());
-//			epoch++;
-//		} while (train.getError() > err);
-//		train.finishTraining();
-		 BasicNetwork network = (BasicNetwork) model.crossvalidate(5, true);
+		// int epoch = 1;
+		//
+		// do {
+		// train.iteration();
+		// System.out
+		// .println("Epoch #" + epoch + " Error:" + train.getError());
+		// epoch++;
+		// } while (train.getError() > err);
+		// train.finishTraining();
+		BasicNetwork network = (BasicNetwork) model.crossvalidate(5, true);
 
 		persist(helper, Paths.get(PERCSOLD_HELPER_PATH), network,
 				Paths.get(PERCSOLD_MODEL_PATH));
