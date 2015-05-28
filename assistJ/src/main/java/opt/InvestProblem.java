@@ -41,7 +41,7 @@ public class InvestProblem extends AbstractProblem {
 	/**
 	 * mininmalna/maksymalna jakość
 	 */
-	private final static int MIN_QUAL = 35, MAX_QUAL = 88;
+	private final static int MIN_QUAL = 20, MAX_QUAL = 88;
 
 	/**
 	 * minimalna maksymalna reklama ( z mnożnikiem 1000)
